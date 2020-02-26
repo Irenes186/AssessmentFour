@@ -101,9 +101,10 @@ public class StoryScreen implements Screen {
         TextButton continueButton = new TextButton("Continue", skin);
 
         // Add buttons to table and style them
+        table.add(continueButton).width(200).height(40).padBottom(40);
         table.add(storyLabel).expand();
         table.row().colspan(2);
-        table.add(continueButton).width(200).height(40).padBottom(40);
+        
 
         // Add listeners
         continueButton.addListener(new ClickListener() {
