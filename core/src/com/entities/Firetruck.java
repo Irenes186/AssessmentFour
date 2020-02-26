@@ -20,6 +20,7 @@ import com.sprites.MovementSprite;
 
 // Java util import
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.misc.Constants.*;
 
@@ -59,6 +60,10 @@ public class Firetruck extends MovementSprite {
     private boolean isAlive;
 
     private final Firestation fireStation;
+    
+    // powerups
+ 	private HashMap<Powerup, Integer> activePowerups;
+ 	// private HashMap inactivePowerups;
 
     /**
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
@@ -94,6 +99,7 @@ public class Firetruck extends MovementSprite {
      * Also initialises any properties needed by the firetruck.
      */
     private void create() {
+    	activePowerups = new HashMap<Powerup, Integer>();
         super.setMovementHitBox(-90);
         this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
@@ -112,6 +118,7 @@ public class Firetruck extends MovementSprite {
 
     /**
      * Update the position and direction of the firetruck every frame.
+     * Apply any active powerups
      *
      * @param batch  The batch to draw onto.
      * @param camera Used to get the centre of the screen.
@@ -170,7 +177,12 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
-
+        
+        
+        // TODO: EXAMPLE CODE. IMPLEMENT PROPERLY
+        for (Powerup pow: activePowerups.keySet()) {
+        	pow.applyPowerup();
+        }
     }
 
     /**
@@ -512,4 +524,12 @@ public class Firetruck extends MovementSprite {
             texture.dispose();
         }
     }
+    
+    public void activatePowerup(Powerup powerup, int activeTime) {
+		activePowerups.put(powerup, activeTime);
+	}
+
+	public void deactivatePowerup(Powerup powerup) {
+		activePowerups.remove(powerup);
+	}
 }
