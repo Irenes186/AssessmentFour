@@ -186,6 +186,7 @@ public class Firetruck extends MovementSprite {
         // TODO: EXAMPLE CODE. IMPLEMENT PROPERLY
         for (Powerup pow: activePowerups.keySet()) {
         	pow.applyPowerup();
+        	pow.update(batch);
         }
     }
 

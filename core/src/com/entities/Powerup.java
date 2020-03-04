@@ -1,11 +1,14 @@
 package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.sprites.SimpleSprite;
 
 public abstract class Powerup extends SimpleSprite {
-	private int activeTime;
-	private int currentActiveTime;
+    // Time in frames for a powerup to be active
+    // TODO: Change to seconds
+	protected int activeTime;
+	protected int currentActiveTime;
 	// The Firetruck that picked up the powerup
 	protected Firetruck target;
 	// Whether or not powerup has been picked up
@@ -66,8 +69,17 @@ public abstract class Powerup extends SimpleSprite {
 			return false;
 		}
 	}
+	
+	// TODO: FIX PERSPECTIVE ON GRAPHICS RENDER (firetrucks rotate images for 3D effect)
+	public void update(Batch batch) {
+	    if (target != null) {
+	        super.update(batch);
+	        setCenter(target.getCentre());
+	    }
+    }
+	
+    protected void endPowerup() {}
 
 	protected abstract boolean doPowerupLogic();
-	protected void endPowerup() {}
 
 }

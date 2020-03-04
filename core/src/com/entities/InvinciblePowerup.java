@@ -4,29 +4,32 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class InvinciblePowerup extends Powerup {
     private float oldArmour;
+    private boolean oldArmourSaved;
 
     public InvinciblePowerup (Texture spriteTexture, int activeTime) {
         super(spriteTexture, activeTime);
+        oldArmourSaved = false;
     }
 	
     public InvinciblePowerup (Texture spriteTexture) {
         super(spriteTexture);
+        oldArmourSaved = false;
     }
 
     @Override
     protected boolean doPowerupLogic() {
-        if (target.getArmour() != 1) {
+        if (!oldArmourSaved) {
             oldArmour = target.getArmour();
+            oldArmourSaved = true;
+            target.setArmour(1);
         }
-        
-        // TODO: Implement
-        // maybe set a flag in target? maybe take note of previous health, and then set to -1?
-        return false;
+        return true;
     }
 
     @Override
     protected void endPowerup() {
         target.setArmour(oldArmour);
         oldArmour = 0;
+        oldArmourSaved = false;
     }
 }

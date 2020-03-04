@@ -295,9 +295,9 @@ public class GameScreen implements Screen {
 		
 		
 		
-		// POWERUP TESTING
-		InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("alienProjectile.png"), 999);
-		testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
+		// EXAMPLE POWERUP
+//		 InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("powerups/invincible.png"), 300);
+//		 testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
 
 	}
 
@@ -325,8 +325,9 @@ public class GameScreen implements Screen {
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		vignetteSepiaShader.begin();
+		
+		// DISABLED FOR ASSESSMENT 4
+		/*vignetteSepiaShader.begin();
 		if (isInTutorial) {
 			vignetteSepiaShader.setUniformf("u_intensity", 0.8f);
 			vignetteSepiaShader.setUniformf("u_outerRadius", 0.6f);
@@ -336,7 +337,7 @@ public class GameScreen implements Screen {
 			vignetteSepiaShader.setUniformf("u_outerRadius", calculateValueForProgress(0.5f, 0.8f));
 			vignetteSepiaShader.setUniformf("u_sepia", calculateValueForProgress(0.65f, 0.3f));
 		}
-		vignetteSepiaShader.end();
+		vignetteSepiaShader.end();*/
 
 		// ---- 1) Update camera and map properties each iteration -------- //
 
@@ -655,7 +656,7 @@ public class GameScreen implements Screen {
 			Projectile projectile = this.projectiles.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				SFX.sfx_truck_damage.play();
-				firetruck.getHealthBar().subtractResourceAmount((int) (projectile.getDamage() * firetruck.getArmour()));
+				firetruck.getHealthBar().subtractResourceAmount((int) (projectile.getDamage() * (1-firetruck.getArmour())));
 				if (this.score >= 10) this.score -= 10;
 				this.projectiles.remove(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
