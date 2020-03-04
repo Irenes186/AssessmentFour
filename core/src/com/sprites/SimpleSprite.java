@@ -248,6 +248,10 @@ public class SimpleSprite extends Sprite {
     public Vector2 getCentre() {
         return this.centre;
     }
+    
+    public void setCenter(Vector2 cent) {
+        this.setCenter(cent.x, cent.y);
+    }
 
     /**
      * Dispose of assets used by the class.
