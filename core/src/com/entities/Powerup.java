@@ -61,11 +61,13 @@ public abstract class Powerup extends SimpleSprite {
 			return true;
 		} else {
 			currentActiveTime = 0;
+			endPowerup();
 			dequeuePowerup();
 			return false;
 		}
 	}
 
 	protected abstract boolean doPowerupLogic();
+	protected void endPowerup() {}
 
 }

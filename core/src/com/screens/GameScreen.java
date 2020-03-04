@@ -292,6 +292,12 @@ public class GameScreen implements Screen {
 		}, 7,10);
 
 		isInTutorial = true;
+		
+		
+		
+		// POWERUP TESTING
+		InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("alienProjectile.png"), 999);
+		testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
 
 	}
 
@@ -649,7 +655,7 @@ public class GameScreen implements Screen {
 			Projectile projectile = this.projectiles.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				SFX.sfx_truck_damage.play();
-				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
+				firetruck.getHealthBar().subtractResourceAmount((int) (projectile.getDamage() * firetruck.getArmour()));
 				if (this.score >= 10) this.score -= 10;
 				this.projectiles.remove(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {

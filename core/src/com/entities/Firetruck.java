@@ -61,6 +61,9 @@ public class Firetruck extends MovementSprite {
 
     private final Firestation fireStation;
     
+    // A percentage (0 - 1) of incoming damage to negate
+    private float armour;
+    
     // powerups
  	private HashMap<Powerup, Integer> activePowerups;
  	// private HashMap inactivePowerups;
@@ -109,6 +112,7 @@ public class Firetruck extends MovementSprite {
         this.setMaxSpeed(this.getType().getProperties()[2]);
         this.createWaterHose();
         this.isAlive = true;
+        this.armour = 0;
 
         // Start the firetruck facing left
         this.rotate(-90);
@@ -531,5 +535,13 @@ public class Firetruck extends MovementSprite {
 
 	public void deactivatePowerup(Powerup powerup) {
 		activePowerups.remove(powerup);
+	}
+	
+	public float getArmour() {
+		return armour;
+	}
+	
+	public void setArmour(float newArmour) {
+		armour = newArmour;
 	}
 }
