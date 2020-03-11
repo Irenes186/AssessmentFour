@@ -246,5 +246,9 @@ public class ResourceBar {
     public void resetResourceAmount() {
         this.currentResourceAmount = this.maxResourceAmount;
     }
+    
+    public boolean isFull() {
+        return currentResourceAmount == maxResourceAmount;
+    }
 
 }

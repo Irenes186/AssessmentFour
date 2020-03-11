@@ -2,17 +2,17 @@ package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class InvinciblePowerup extends Powerup {
-    private float oldArmour;
+public class DamagePowerup extends Powerup {
+    private float oldDamage;
 
-    public InvinciblePowerup (Texture spriteTexture, int activeTime) {
+    public DamagePowerup (Texture spriteTexture, int activeTime) {
         super(spriteTexture, activeTime);
     }
     
     @Override
     protected void beginPowerup() {
-        oldArmour = target.getArmour();
-        target.setArmour(1);
+        oldDamage = target.getDamage();
+        target.setDamage(oldDamage * 2);
     }
 
     @Override
@@ -20,7 +20,8 @@ public class InvinciblePowerup extends Powerup {
 
     @Override
     protected void endPowerup() {
-        target.setArmour(oldArmour);
-        oldArmour = 0;
+        target.setDamage(oldDamage);
+        oldDamage = 0;
     }
+
 }

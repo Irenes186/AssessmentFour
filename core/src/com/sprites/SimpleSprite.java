@@ -21,7 +21,7 @@ import com.misc.ResourceBar;
 public class SimpleSprite extends Sprite {
 
     // Private values to be used in this class only
-    private Texture texture;
+    protected Texture texture;
     private float width, height, internalTime;
     private ResourceBar healthBar;
 

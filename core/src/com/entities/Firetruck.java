@@ -63,6 +63,8 @@ public class Firetruck extends MovementSprite {
     
     // A percentage (0 - 1) of incoming damage to negate
     private float armour;
+    // Damage
+    private float damage;
     
     // powerups
  	private HashMap<Powerup, Integer> activePowerups;
@@ -117,7 +119,7 @@ public class Firetruck extends MovementSprite {
         // Start the firetruck facing left
         this.rotate(-90);
         this.resetSprite();
-
+        damage = this.getType().getProperties()[7];
     }
 
     /**
@@ -497,7 +499,7 @@ public class Firetruck extends MovementSprite {
     }
 
     public float getDamage() {
-        return this.getType().getProperties()[7];
+        return damage;
     }
 
     public void buy() {
@@ -545,4 +547,8 @@ public class Firetruck extends MovementSprite {
 	public void setArmour(float newArmour) {
 		armour = newArmour;
 	}
+
+    public void setDamage(float newDamage) {
+        damage = newDamage;
+    }
 }

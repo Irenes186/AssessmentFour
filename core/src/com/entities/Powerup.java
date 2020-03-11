@@ -13,6 +13,8 @@ public abstract class Powerup extends SimpleSprite {
 	protected Firetruck target;
 	// Whether or not powerup has been picked up
 	protected boolean pickedUp;
+	// Is this the first frame the powerup has been applied?
+	protected boolean firstApply;
 
 	// Basic constructor with no powerup timeout
 	public Powerup (Texture spriteTexture) {
@@ -31,6 +33,7 @@ public abstract class Powerup extends SimpleSprite {
 		currentActiveTime = 0;
 		target = null;
 		pickedUp = false;
+		firstApply = true;
 	}
 	
 	public void queuePowerup (Firetruck target) {
@@ -46,9 +49,13 @@ public abstract class Powerup extends SimpleSprite {
 	
 	/* Apply the powerup's effects to the specified fireengine
 	 * 
-	 * return true if the powerup was applied successfuly, false otherwise
+	 * return true if the powerup was applied successfully, false otherwise
 	 */
 	public boolean applyPowerup () {
+	    if (firstApply) {
+	        beginPowerup();
+	        firstApply = false;
+	    }
 		if (doPowerupTimeout()) {
 			return doPowerupLogic();
 		} else {
@@ -70,16 +77,16 @@ public abstract class Powerup extends SimpleSprite {
 		}
 	}
 	
-	// TODO: FIX PERSPECTIVE ON GRAPHICS RENDER (firetrucks rotate images for 3D effect)
 	public void update(Batch batch) {
 	    if (target != null) {
-	        super.update(batch);
-	        setCenter(target.getCentre());
+	        batch.draw(texture, target.getCentreX(), target.getCentreY(), texture.getWidth() * 3, texture.getHeight() * 3);
 	    }
     }
 	
-    protected void endPowerup() {}
+	protected void beginPowerup() {}
 
 	protected abstract boolean doPowerupLogic();
+	
+	protected void endPowerup() {}
 
 }

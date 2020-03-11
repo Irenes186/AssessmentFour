@@ -34,6 +34,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 // Java util imports
 import java.util.ArrayList;
+import java.util.Random;
 
 // Class imports
 import com.entities.*;
@@ -105,6 +106,8 @@ public class GameScreen implements Screen {
 
 	private final CarparkScreen carparkScreen;
 	private final GameInputHandler gameInputHandler;
+	
+	Random powGenerator;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -293,11 +296,22 @@ public class GameScreen implements Screen {
 
 		isInTutorial = true;
 		
+		powGenerator = new Random();
 		
 		
-		// EXAMPLE POWERUP
-//		 InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("powerups/invincible.png"), 300);
-//		 testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
+		// EXAMPLE POWERUPS
+//	    InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("powerups/invincible.png"), 300);
+//	    testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
+//		firestation.getActiveFireTruck().getHealthBar().subtractResourceAmount(100);
+//		RepairPowerup testPowerup2 = new RepairPowerup(new Texture("powerups/health.png"));
+//        testPowerup2.queuePowerup(this.firestation.getActiveFireTruck());
+//		firestation.getActiveFireTruck().getWaterBar().subtractResourceAmount(500);
+//        RefillPowerup testPowerup3 = new RefillPowerup(new Texture("powerups/water.png"));
+//        testPowerup3.queuePowerup(this.firestation.getActiveFireTruck());
+//		SpeedPowerup testPowerup4 = new SpeedPowerup(new Texture("powerups/speed.png"), 10000);
+//		testPowerup4.queuePowerup(this.firestation.getActiveFireTruck());
+//        DamagePowerup testPowerup5 = new DamagePowerup(new Texture("powerups/damage.png"), 10000);
+//        testPowerup5.queuePowerup(this.firestation.getActiveFireTruck());
 
 	}
 
@@ -610,6 +624,27 @@ public class GameScreen implements Screen {
 			if (patrol.isDead()) {
 				patrol.removeDead(mapGraph);
 				this.ETPatrols.remove(patrol);
+				int chosenPowerup = powGenerator.nextInt(5) + 1;
+				Powerup newPow;
+				switch (chosenPowerup) {
+				    case 1:
+				        newPow = new InvinciblePowerup(new Texture("powerups/invincible.png"), 600);
+				        break;
+				    case 2:
+				        newPow = new RepairPowerup(new Texture("powerups/health.png"));
+				        break;
+				    case 3:
+				        newPow = new RefillPowerup(new Texture("powerups/water.png"));
+				    case 4:
+				        newPow = new SpeedPowerup(new Texture("powerups/speed.png"), 600);
+				        break;
+				    case 5:
+				        newPow = new DamagePowerup(new Texture("powerups/damage.png"), 600);
+				        break;
+			        default:
+			            throw new RuntimeException("Attempted to spawn powerup of type " + chosenPowerup);
+				}
+				newPow.queuePowerup(this.firestation.getActiveFireTruck());
 			}
 		}
 
