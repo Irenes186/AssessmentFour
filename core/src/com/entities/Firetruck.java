@@ -21,6 +21,8 @@ import com.sprites.MovementSprite;
 // Java util import
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.misc.Constants.*;
 
@@ -184,9 +186,10 @@ public class Firetruck extends MovementSprite {
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
         
-        
-        // TODO: EXAMPLE CODE. IMPLEMENT PROPERLY
-        for (Powerup pow: activePowerups.keySet()) {
+        // Take a copy of active powerups to work around concurrent set modification
+        Set<Powerup> powerups = new HashSet<Powerup>();
+        powerups.addAll(activePowerups.keySet());
+        for (Powerup pow: powerups) {
         	pow.applyPowerup();
         	pow.update(batch);
         }
