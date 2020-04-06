@@ -12,6 +12,7 @@ import com.sprites.SimpleSprite;
 
 // Constants import
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import java.io.StringWriter;

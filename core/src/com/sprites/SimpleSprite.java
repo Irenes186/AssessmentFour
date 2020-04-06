@@ -21,7 +21,7 @@ import com.misc.ResourceBar;
 public class SimpleSprite extends Sprite {
 
     // Private values to be used in this class only
-    private Texture texture;
+    protected Texture texture;
     private float width, height, internalTime;
     private ResourceBar healthBar;
 
@@ -247,6 +247,10 @@ public class SimpleSprite extends Sprite {
 
     public Vector2 getCentre() {
         return this.centre;
+    }
+    
+    public void setCenter(Vector2 cent) {
+        this.setCenter(cent.x, cent.y);
     }
 
     /**
