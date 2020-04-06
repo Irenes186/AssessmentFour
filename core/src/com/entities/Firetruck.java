@@ -21,6 +21,9 @@ import com.sprites.MovementSprite;
 // Java util import
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
+import java.io.StringWriter;
+
 import static com.misc.Constants.*;
 
 /**
@@ -511,5 +514,33 @@ public class Firetruck extends MovementSprite {
         for (Texture texture : this.waterFrames) {
             texture.dispose();
         }
+    }
+
+    public void setHealth(int newHealth) {
+        this.getHealthBar().setCurrentAmount(newHealth);
+    }
+
+    public void setBought(boolean isBought) {
+        this.isBought = isBought;
+    }
+
+    public void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
+    public JSONObject save() {
+        JSONObject json = new JSONObject();
+
+        json.put("TruckType", this.getType().getColourString());
+
+        if (this.fireStation.getActiveFireTruck() == this)  {
+            json.put("Health", this.getHealthBar().getCurrentAmount());
+            json.put("Location", this.getX() + ", " + this.getY());
+        } else {
+            json.put("Alive", this.isAlive);
+            json.put("Bought", this.isBought);
+        }
+
+        return json;
     }
 }

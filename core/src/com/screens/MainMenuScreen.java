@@ -19,6 +19,13 @@ import com.misc.SFX;
 
 import static com.misc.Constants.DEBUG_ENABLED;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import java.util.ArrayList;
+
 /**
  * Displays the main menu screen with selection buttons.
  * 
@@ -120,6 +127,7 @@ public class MainMenuScreen implements Screen {
 		TextButton playButton = new TextButton("Play", skin);
 		TextButton howToPlayButton = new TextButton("How to Play", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
+                TextButton loadButton = new TextButton("Load", skin);
 
 		// Add buttons to table and style them
 		buttonTable.add(heading).padBottom(10);
@@ -127,6 +135,8 @@ public class MainMenuScreen implements Screen {
 		buttonTable.add(subHeading).padBottom(20);
 		buttonTable.row();
 		buttonTable.add(playButton).padBottom(20).width(200).height(40);
+                buttonTable.row();
+                buttonTable.add(loadButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
 		buttonTable.add(howToPlayButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
@@ -157,6 +167,33 @@ public class MainMenuScreen implements Screen {
 				System.exit(1);
 			}
 		});
+
+                loadButton.addListener(new ClickListener() {
+                    @Override
+		    public void clicked(InputEvent event, float x, float y) {
+                        File file = new File ("saves/test.txt");
+                        String fileString;
+                        ArrayList<String> fileContents = new ArrayList<String>();
+
+                        try {
+
+                            BufferedReader reader = new BufferedReader (new FileReader (file));
+
+
+                            while ((fileString = reader.readLine()) != null) {
+                                fileContents.add(fileString);
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        game.setScreen (new GameScreen (game, fileContents));
+                        dispose();
+
+                    }
+                });
 
 		// Add table to stage
 		stage.addActor(bcgstack);

@@ -13,6 +13,9 @@ import com.sprites.SimpleSprite;
 // Constants import
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
+import java.io.StringWriter;
+
 import static com.misc.Constants.*;
 
 /**
@@ -268,6 +271,30 @@ public class Firestation extends SimpleSprite {
 
     public boolean isDestroyed() {
         return this.isDestroyed;
+    }
+
+    public String save() {
+        JSONObject json = new JSONObject();
+
+        json.put("ActiveTruck", this.activeFireTruck.save());
+
+        for (int i = 0; i < this.parkedFireTrucks.size(); i++) {
+            json.put("Firetruck" + i, this.parkedFireTrucks.get(i).save());
+        }
+
+        json.put("isDestroyed", this.isDestroyed);
+        json.put("isVulnerable", this.isVulnerable);
+
+        StringWriter out = new StringWriter();
+
+        try {
+            json.writeJSONString(out);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return out.toString();
+
     }
 
 }
