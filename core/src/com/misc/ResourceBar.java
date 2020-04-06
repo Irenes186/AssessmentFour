@@ -29,12 +29,12 @@ public class ResourceBar {
     private final int barWidth;
     private final int barHeight;
     private boolean fadeIn, fadeOut, beginFadeOut;
-    private Color[] colourRange; 
+    private Color[] colourRange;
 
     /**
      * Constructor for this class, gathers required information so that it can
      * be drawn.
-     * 
+     *
      * @param spriteWidth  The width of the sprite.
      * @param spriteHeight The height of the sprite.
      */
@@ -193,6 +193,10 @@ public class ResourceBar {
         this.currentResourceAmount = (this.currentResourceAmount / this.maxResourceAmount) * maxAmount;
         this.maxResourceAmount = maxAmount;
         this.bar.setStyle(getResourceBarStyle());
+    }
+
+    public void setCurrentAmount(int newAmount) {
+        this.currentResourceAmount = newAmount;
     }
 
     /**

@@ -36,6 +36,15 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import java.util.ArrayList;
 import java.util.Random;
 
+import java.util.Iterator;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+
+import java.io.StringWriter;
+
 // Class imports
 import com.entities.*;
 import com.Kroy;
@@ -295,10 +304,10 @@ public class GameScreen implements Screen {
 		}, 7,10);
 
 		isInTutorial = true;
-		
+
 		powGenerator = new Random();
-		
-		
+
+
 		// EXAMPLE POWERUPS
 //	    InvinciblePowerup testPowerup = new InvinciblePowerup(new Texture("powerups/invincible.png"), 300);
 //	    testPowerup.queuePowerup(this.firestation.getActiveFireTruck());
@@ -314,6 +323,71 @@ public class GameScreen implements Screen {
 //        testPowerup5.queuePowerup(this.firestation.getActiveFireTruck());
 
 	}
+
+  public GameScreen (final Kroy game, ArrayList<String> saveContents) {
+    this(game);
+    this.isInTutorial = false;
+
+    JSONParser parser = new JSONParser();
+
+    try {
+      JSONObject trucks = (JSONObject) parser.parse (saveContents.get(0));
+      JSONObject activeTruck =  (JSONObject) parser.parse(trucks.get("ActiveTruck").toString());
+      String newActiveTruckType = activeTruck.get("TruckType").toString();
+
+      ArrayList<Firetruck> currentTrucks = firestation.getParkedFireTrucks();
+      currentTrucks.add(firestation.getActiveFireTruck());
+
+      for (Firetruck firetruck : currentTrucks) {
+        String fireTruckColour = firetruck.getType().getColourString();
+
+        if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
+          String[] newPosition = activeTruck.get("Location").toString().split(", ");
+          firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
+          firetruck.setHealth((int)((double) activeTruck.get("Health")));
+
+          firestation.setActiveFireTruck(firetruck);
+        }
+        else {
+
+          for (Object key: trucks.keySet()) {
+            if (!(trucks.get(key) instanceof JSONObject)) {
+              continue;
+            }
+
+            JSONObject truck = (JSONObject) parser.parse(trucks.get(key).toString());
+
+            if (fireTruckColour == truck.get("TruckType")) {
+              firetruck.setBought ((Boolean) truck.get("Bought"));
+              firetruck.setAlive ((Boolean) truck.get("Alive"));
+            }
+          }
+        }
+      }
+
+      for (int index = 1; index < saveContents.size() - 1; index++) {
+        JSONObject fortData = (JSONObject) parser.parse(saveContents.get(index));
+
+        for (ETFortress fort : this.ETFortresses) {
+          if (fort.getType().name().equals(fortData.get("FortType"))) {
+              fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
+          }
+        }
+      }
+      JSONObject gameData = (JSONObject) parser.parse(saveContents.get(saveContents.size() - 1));
+
+      this.score = (int)((long) gameData.get("Score"));
+      this.time = (int)((long) gameData.get("Time"));
+
+
+    } catch (ParseException pe) {
+      System.out.println (pe.toString());
+
+    }
+
+
+  }
+
 
 	/**
 	 * Actions to perform on first render cycle of the game
@@ -339,7 +413,7 @@ public class GameScreen implements Screen {
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		// DISABLED FOR ASSESSMENT 4
 		/*vignetteSepiaShader.begin();
 		if (isInTutorial) {
@@ -1257,4 +1331,31 @@ public class GameScreen implements Screen {
 
 	public Firetruck getActiveTruck() {return this.firestation.getActiveFireTruck();}
 
+	public String save (String fileName) {
+		String output = "";
+
+		output += this.firestation.save() + "\n";
+
+		for (ETFortress fort : ETFortresses) {
+		    output += fort.save() + "\n";
+		}
+
+		JSONObject json = new JSONObject();
+		StringWriter out = new StringWriter();
+
+
+		json.put("Score", this.score);
+		json.put("Time", this.time);
+
+		try {
+		    json.writeJSONString(out);
+		} catch (Exception e) {
+		    System.out.println(e);
+		}
+
+		output += out.toString() + "\n";
+
+		return output;
+
+	}
 }

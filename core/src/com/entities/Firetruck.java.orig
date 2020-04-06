@@ -534,26 +534,8 @@ public class Firetruck extends MovementSprite {
             texture.dispose();
         }
     }
-    
-    public void activatePowerup(Powerup powerup, int activeTime) {
-		activePowerups.put(powerup, activeTime);
-	}
+<<<<<<< HEAD
 
-	public void deactivatePowerup(Powerup powerup) {
-		activePowerups.remove(powerup);
-	}
-	
-	public float getArmour() {
-		return armour;
-	}
-	
-	public void setArmour(float newArmour) {
-		armour = newArmour;
-	}
-
-    public void setDamage(float newDamage) {
-        damage = newDamage;
-    }
     public void setHealth(int newHealth) {
         this.getHealthBar().setCurrentAmount(newHealth);
     }
@@ -582,3 +564,26 @@ public class Firetruck extends MovementSprite {
         return json;
     }
 }
+=======
+    
+    public void activatePowerup(Powerup powerup, int activeTime) {
+		activePowerups.put(powerup, activeTime);
+	}
+
+	public void deactivatePowerup(Powerup powerup) {
+		activePowerups.remove(powerup);
+	}
+	
+	public float getArmour() {
+		return armour;
+	}
+	
+	public void setArmour(float newArmour) {
+		armour = newArmour;
+	}
+
+    public void setDamage(float newDamage) {
+        damage = newDamage;
+    }
+}
+>>>>>>> d7301e8bb16ece26907d3073f5a312f5f2290c5f
