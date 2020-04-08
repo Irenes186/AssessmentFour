@@ -8,6 +8,7 @@ public class SpeedPowerup extends Powerup {
 
     public SpeedPowerup (Texture spriteTexture, int activeTime) {
         super(spriteTexture, activeTime);
+        type = "Speed";
     }
     
     @Override

@@ -16,6 +16,8 @@ public abstract class Powerup extends SimpleSprite {
 	// Is this the first frame the powerup has been applied?
 	protected boolean firstApply;
 
+  protected String type;
+
 	// Basic constructor with no powerup timeout
 	public Powerup (Texture spriteTexture) {
 		super(spriteTexture);
@@ -62,7 +64,7 @@ public abstract class Powerup extends SimpleSprite {
 			return false;
 		}
 	}
-	
+
 	private boolean doPowerupTimeout() {
 		if (activeTime == -1) {
 			return true;
@@ -76,17 +78,20 @@ public abstract class Powerup extends SimpleSprite {
 			return false;
 		}
 	}
-	
+
 	public void update(Batch batch) {
 	    if (target != null) {
 	        batch.draw(texture, target.getCentreX(), target.getCentreY(), texture.getWidth() * 3, texture.getHeight() * 3);
 	    }
     }
-	
+
 	protected void beginPowerup() {}
 
 	protected abstract boolean doPowerupLogic();
-	
+
 	protected void endPowerup() {}
 
+  public String toString() {
+        return type;
+  }
 }

@@ -63,12 +63,12 @@ public class Firetruck extends MovementSprite {
     private boolean isAlive;
 
     private final Firestation fireStation;
-    
+
     // A percentage (0 - 1) of incoming damage to negate
     private float armour;
     // Damage
     private float damage;
-    
+
     // powerups
  	private HashMap<Powerup, Integer> activePowerups;
  	// private HashMap inactivePowerups;
@@ -186,8 +186,8 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
-        
-        
+
+
         // TODO: EXAMPLE CODE. IMPLEMENT PROPERLY
         for (Powerup pow: activePowerups.keySet()) {
         	pow.applyPowerup();
@@ -574,6 +574,11 @@ public class Firetruck extends MovementSprite {
         if (this.fireStation.getActiveFireTruck() == this)  {
             json.put("Health", this.getHealthBar().getCurrentAmount());
             json.put("Location", this.getX() + ", " + this.getY());
+
+            ArrayList <String> powerups = new ArrayList <String>();
+            activePowerups.forEach((pow,val) -> powerups.add(pow.toString()+","+ Integer.toString(val)));
+            json.put("Powerups", powerups);
+
         } else {
             json.put("Alive", this.isAlive);
             json.put("Bought", this.isBought);
