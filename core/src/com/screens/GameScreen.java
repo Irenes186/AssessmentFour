@@ -346,6 +346,27 @@ public class GameScreen implements Screen {
           firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
           firetruck.setHealth((int)((double) activeTruck.get("Health")));
 
+          ArrayList <String> powerups = (ArrayList) activeTruck.get("Powerups");
+
+          for (String pow: powerups) {
+              String[] powerup = pow.split(",");
+
+              Powerup newPow;
+
+              System.out.println(powerup[0]);
+
+              switch (powerup[0]) {
+                  case "Damage":
+                      newPow = new DamagePowerup(new Texture("powerups/damage.png"), Integer.parseInt(powerup[1]));
+                      System.out.println("Dicks");
+                      break;
+			        default:
+			            throw new RuntimeException("Cannot load save powerup: " + powerup[0]);
+              }
+
+              newPow.queuePowerup(firetruck);
+          }
+
           firestation.setActiveFireTruck(firetruck);
         }
         else {
