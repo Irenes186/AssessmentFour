@@ -63,12 +63,12 @@ public class Firetruck extends MovementSprite {
     private boolean isAlive;
 
     private final Firestation fireStation;
-
+    
     // A percentage (0 - 1) of incoming damage to negate
     private float armour;
     // Damage
     private float damage;
-
+    
     // powerups
  	private HashMap<Powerup, Integer> activePowerups;
  	// private HashMap inactivePowerups;
@@ -186,8 +186,8 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
-
-
+        
+        
         // TODO: EXAMPLE CODE. IMPLEMENT PROPERLY
         for (Powerup pow: activePowerups.keySet()) {
         	pow.applyPowerup();
@@ -534,26 +534,8 @@ public class Firetruck extends MovementSprite {
             texture.dispose();
         }
     }
-    
-    public void activatePowerup(Powerup powerup, int activeTime) {
-		activePowerups.put(powerup, activeTime);
-	}
+<<<<<<< HEAD
 
-	public void deactivatePowerup(Powerup powerup) {
-		activePowerups.remove(powerup);
-	}
-	
-	public float getArmour() {
-		return armour;
-	}
-	
-	public void setArmour(float newArmour) {
-		armour = newArmour;
-	}
-
-    public void setDamage(float newDamage) {
-        damage = newDamage;
-    }
     public void setHealth(int newHealth) {
         this.getHealthBar().setCurrentAmount(newHealth);
     }
@@ -574,11 +556,6 @@ public class Firetruck extends MovementSprite {
         if (this.fireStation.getActiveFireTruck() == this)  {
             json.put("Health", this.getHealthBar().getCurrentAmount());
             json.put("Location", this.getX() + ", " + this.getY());
-
-            ArrayList <String> powerups = new ArrayList <String>();
-            activePowerups.forEach((pow,val) -> powerups.add(pow.toString()+","+ Integer.toString(val)));
-            json.put("Powerups", powerups);
-
         } else {
             json.put("Alive", this.isAlive);
             json.put("Bought", this.isBought);
@@ -587,3 +564,26 @@ public class Firetruck extends MovementSprite {
         return json;
     }
 }
+=======
+    
+    public void activatePowerup(Powerup powerup, int activeTime) {
+		activePowerups.put(powerup, activeTime);
+	}
+
+	public void deactivatePowerup(Powerup powerup) {
+		activePowerups.remove(powerup);
+	}
+	
+	public float getArmour() {
+		return armour;
+	}
+	
+	public void setArmour(float newArmour) {
+		armour = newArmour;
+	}
+
+    public void setDamage(float newDamage) {
+        damage = newDamage;
+    }
+}
+>>>>>>> d7301e8bb16ece26907d3073f5a312f5f2290c5f

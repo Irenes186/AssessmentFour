@@ -6,6 +6,7 @@ public class RefillPowerup extends Powerup {
 
     public RefillPowerup(Texture spriteTexture) {
         super(spriteTexture);
+        type = "Refill";
     }
     
 //    @Override

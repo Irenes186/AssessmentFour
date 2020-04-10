@@ -6,6 +6,7 @@ public class RepairPowerup extends Powerup {
 
     public RepairPowerup(Texture spriteTexture) {
         super(spriteTexture);
+        type = "Repair";
     }
 
     @Override
