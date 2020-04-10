@@ -45,7 +45,7 @@ public class Patrol extends PatrolMovementSprite {
      */
     public Patrol(ArrayList<Texture> textureSlices, MapGraph mapGraph){
         super(textureSlices.get(textureSlices.size() - 1), mapGraph);
-        this.getHealthBar().setMaxResource(25);
+        this.getHealthBar().setMaxResource((int) (25 * com.misc.Constants.getInstance().difficulty));
         this.textureSlices = textureSlices;
         this.isDead = false;
         this.detectionRange = Constants.TILE_DIMS * 5;

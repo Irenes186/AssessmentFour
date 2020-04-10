@@ -111,7 +111,7 @@ public class Firetruck extends MovementSprite {
         super.setMovementHitBox(-90);
         this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
-        this.getHealthBar().setMaxResource((int) this.getType().getProperties()[0]);
+        this.getHealthBar().setMaxResource((int) (this.getType().getProperties()[0] * (1 / com.misc.Constants.getInstance().difficulty)));
         this.setAccelerationRate(this.getType().getProperties()[1]);
         this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
         this.setMaxSpeed(this.getType().getProperties()[2]);
