@@ -24,6 +24,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
 import java.util.ArrayList;
 
 /**
@@ -211,7 +215,14 @@ public class MainMenuScreen implements Screen {
           e.printStackTrace();
         }
 
-
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject gameData = (JSONObject) parser.parse(fileContents.get(fileContents.size() - 1));
+            com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
+        } catch (ParseException pe) {
+            System.out.println (pe.toString());
+        }
+        
         game.setScreen (new GameScreen (game, fileContents));
         dispose();
 

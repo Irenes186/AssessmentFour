@@ -405,6 +405,7 @@ public class GameScreen implements Screen {
       }
       JSONObject gameData = (JSONObject) parser.parse(saveContents.get(saveContents.size() - 1));
 
+      com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
       this.score = (int)((long) gameData.get("Score"));
       this.time = (int)((long) gameData.get("Time"));
 
@@ -1372,7 +1373,7 @@ public class GameScreen implements Screen {
 		JSONObject json = new JSONObject();
 		StringWriter out = new StringWriter();
 
-
+		json.put("Difficulty", com.misc.Constants.getInstance().difficulty);
 		json.put("Score", this.score);
 		json.put("Time", this.time);
 
