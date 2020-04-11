@@ -168,7 +168,7 @@ public class GameScreen implements Screen {
 		this.stage.setDebugAll(DEBUG_ENABLED);
 
 		Table table = new Table();
-		table.row().colspan(3).expand().pad(40).padBottom(150);
+		table.row().colspan(3).expand().pad(40).padBottom(600);
 		table.setFillParent(true);
 
 		scoreLabel = new Label("", game.getFont10());
@@ -496,7 +496,7 @@ public class GameScreen implements Screen {
 
 		// Render the arrow
 		firestation.updateActiveArrow(shapeRenderer, ETFortresses);
-
+		
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		this.game.batch.begin();
@@ -569,6 +569,8 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
+//	    stage.getViewport().update(width, height);
+	    camera.update();
 		vignetteSepiaShader.begin();
 		vignetteSepiaShader.setUniformf("u_resolution", width, height);
 		vignetteSepiaShader.end();

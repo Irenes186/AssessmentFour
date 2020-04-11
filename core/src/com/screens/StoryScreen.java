@@ -166,6 +166,8 @@ public class StoryScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
+        camera.viewportHeight = width;
+        camera.viewportHeight = height;
         viewport.update(width, height);
         camera.update();
     }
