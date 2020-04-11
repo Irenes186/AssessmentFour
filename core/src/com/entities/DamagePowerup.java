@@ -7,8 +7,9 @@ public class DamagePowerup extends Powerup {
 
     public DamagePowerup (Texture spriteTexture, int activeTime) {
         super(spriteTexture, activeTime);
+        type = "Damage";
     }
-    
+
     @Override
     protected void beginPowerup() {
         oldDamage = target.getDamage();
@@ -23,5 +24,6 @@ public class DamagePowerup extends Powerup {
         target.setDamage(oldDamage);
         oldDamage = 0;
     }
+
 
 }

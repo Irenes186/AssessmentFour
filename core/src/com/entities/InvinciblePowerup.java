@@ -7,6 +7,7 @@ public class InvinciblePowerup extends Powerup {
 
     public InvinciblePowerup (Texture spriteTexture, int activeTime) {
         super(spriteTexture, activeTime);
+        type = "Invicible";
     }
     
     @Override

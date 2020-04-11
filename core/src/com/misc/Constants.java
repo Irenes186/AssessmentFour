@@ -7,7 +7,20 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Game constants for use by Kroy.
  */
-public final class Constants {
+public class Constants {
+    private static Constants instance;
+    public float difficulty = 1.0f;
+    
+    private Constants() {
+        
+    }
+    
+    public static Constants getInstance() {
+        if (instance == null) {
+            instance = new Constants();
+        }
+        return instance;
+    }
 
      // Simple enums
      public enum Direction {

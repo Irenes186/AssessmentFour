@@ -19,6 +19,17 @@ import com.misc.SFX;
 
 import static com.misc.Constants.DEBUG_ENABLED;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
+import org.json.simple.parser.JSONParser;
+import java.util.ArrayList;
+
 /**
  * Displays the main menu screen with selection buttons.
  * 
@@ -121,12 +132,34 @@ public class MainMenuScreen implements Screen {
 		TextButton howToPlayButton = new TextButton("How to Play", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
 
+    File saveDir = new File ("saves/");
+    TextButton loadButton = new TextButton("Load", skin);
+    SelectBox <String> saveSelect = new SelectBox <String>(skin);
+
+    File[] files = saveDir.listFiles();
+    int numberOfFiles = files.length;
+    String[] fileNames = new String [numberOfFiles];
+
+    for (int i = 0; i < numberOfFiles; i++) {
+        fileNames[i] = files[i].getName();
+    }
+
+    saveSelect.setItems(fileNames);
+
+    Table saveTable = new Table();
+    saveTable.add(loadButton).padBottom(20).width(100).height(40);
+    saveTable.add(saveSelect).padBottom(20).width(100).height(40).right();
+
+    System.out.println(saveSelect.getItems());
+
 		// Add buttons to table and style them
 		buttonTable.add(heading).padBottom(10);
 		buttonTable.row();
 		buttonTable.add(subHeading).padBottom(20);
 		buttonTable.row();
 		buttonTable.add(playButton).padBottom(20).width(200).height(40);
+    buttonTable.row();
+    buttonTable.add(saveTable);
 		buttonTable.row();
 		buttonTable.add(howToPlayButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
@@ -157,6 +190,44 @@ public class MainMenuScreen implements Screen {
 				System.exit(1);
 			}
 		});
+
+    loadButton.addListener(new ClickListener() {
+      @Override
+		  public void clicked(InputEvent event, float x, float y) {
+        String fileString;
+        String fileName = saveSelect.getSelected();
+        if (fileName == null) {
+            return;
+        }
+        File file = new File("saves/" + fileName);
+        ArrayList<String> fileContents = new ArrayList<String>();
+
+        try {
+
+          BufferedReader reader = new BufferedReader (new FileReader (file));
+
+
+          while ((fileString = reader.readLine()) != null) {
+            fileContents.add(fileString);
+
+           }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject gameData = (JSONObject) parser.parse(fileContents.get(fileContents.size() - 1));
+            com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
+        } catch (ParseException pe) {
+            System.out.println (pe.toString());
+        }
+        
+        game.setScreen (new GameScreen (game, fileContents));
+        dispose();
+
+      }
+    });
 
 		// Add table to stage
 		stage.addActor(bcgstack);

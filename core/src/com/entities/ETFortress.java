@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
+import org.json.simple.JSONObject;
+import java.io.StringWriter;
+
 // Custom class import
 import com.misc.Constants.*;
 import com.screens.GameScreen;
@@ -54,7 +57,7 @@ public class ETFortress extends SimpleSprite {
         this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
-        this.getHealthBar().setMaxResource(type.getHealth());
+        this.getHealthBar().setMaxResource((int) (type.getHealth() * com.misc.Constants.getInstance().difficulty));
         super.resetRotation(90);
     }
 
@@ -120,5 +123,23 @@ public class ETFortress extends SimpleSprite {
 
     public FortressType getType() {
         return this.type;
+    }
+
+    public String save() {
+
+        JSONObject json = new JSONObject();
+
+        json.put("FortType", this.getType().name());
+        json.put("Health", this.getHealthBar().getCurrentAmount());
+
+        StringWriter out = new StringWriter();
+
+        try {
+            json.writeJSONString(out);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return out.toString();
     }
 }

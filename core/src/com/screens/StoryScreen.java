@@ -98,19 +98,40 @@ public class StoryScreen implements Screen {
         // Create actors
         TypingLabel storyLabel = new TypingLabel(story, skin);
         storyLabel.setAlignment(Align.center);
-        TextButton continueButton = new TextButton("Continue", skin);
+        TextButton easyButton = new TextButton("Easy", skin);
+        TextButton mediumButton = new TextButton("Normal", skin);
+        TextButton hardButton = new TextButton("Hard", skin);
 
         // Add buttons to table and style them
-        table.add(continueButton).width(200).height(40).padBottom(40);
+        table.add(easyButton).width(200).height(40).padBottom(40);
+        table.add(mediumButton).width(200).height(40).padBottom(40);
+        table.add(hardButton).width(200).height(40).padBottom(40);
         table.add(storyLabel).expand();
         table.row().colspan(2);
         
 
         // Add listeners
-        continueButton.addListener(new ClickListener() {
+        easyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(gameScreen);
+                com.misc.Constants.getInstance().difficulty = 0.5f;
+                game.setScreen(new GameScreen(game));
+                dispose();
+            }
+        });
+        mediumButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                com.misc.Constants.getInstance().difficulty = 1.0f;
+                game.setScreen(new GameScreen(game));
+                dispose();
+            }
+        });
+        hardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                com.misc.Constants.getInstance().difficulty = 1.5f;
+                game.setScreen(new GameScreen(game));
                 dispose();
             }
         });
@@ -119,7 +140,8 @@ public class StoryScreen implements Screen {
         stage.addActor(bcgstack);
 
         // creates game screen here to allow for less load time later
-        gameScreen = new GameScreen(game);
+//        gameScreen = new GameScreen(game);
+        // ^ Moved instantiation to event listener to allow for difficulty changing before entity spawning
     }
 
     /**
@@ -144,6 +166,8 @@ public class StoryScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
+        camera.viewportHeight = width;
+        camera.viewportHeight = height;
         viewport.update(width, height);
         camera.update();
     }

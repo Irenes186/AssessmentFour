@@ -21,6 +21,10 @@ import com.Kroy;
 
 import static com.misc.Constants.DEBUG_ENABLED;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * Screen that appears when the user pauses the game.
  * Whilst the game is paused, the timer will stop
@@ -38,6 +42,8 @@ public class PauseScreen implements Screen {
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final Stage stage;
+
+    private TextField saveField;
 
     /**
      * The constructor for the pause screen
@@ -90,16 +96,22 @@ public class PauseScreen implements Screen {
         TextButton resumeButton = new TextButton("Resume game", skin);
         TextButton howToPlayButton = new TextButton("How to Play", skin);
         TextButton quitButton = new TextButton("Return to Main Menu", skin);
+        TextButton saveButton = new TextButton("Save", skin);
         Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         scoreLabel.setAlignment(Align.right);
         Label timeLabel = new Label("Time: " + gameScreen.getFireStationTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         timeLabel.setAlignment(Align.left);
+
+        saveField = new TextField ("Enter save file name", skin);
 
         table.add(label).padBottom(20);
         table.row();
         table.add(resumeButton).width(200).height(40).padBottom(20);
         table.row();
         table.add(howToPlayButton).width(200).height(40).padBottom(20);
+        table.row();
+        table.add(saveButton).width(200).height(40).padBottom(20);
+        table.add(saveField).width(200).height(40).padBottom(20);
         table.row();
         table.add(quitButton).width(200).height(40).padBottom(20);
         table.row();
@@ -132,6 +144,37 @@ public class PauseScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
                 gameScreen.dispose();
                 dispose();
+            }
+        });
+
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                File folder = new File("saves");
+
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+                File[] listOfFiles = folder.listFiles();
+
+                String newFileName = "saves/" + saveField.getText() + ".txt";
+
+                for (File file : listOfFiles) {
+                   if (file.getName() == newFileName)  {
+                       return;
+                       // Handle error
+                   }
+
+                }
+
+                try {
+                    FileWriter writer = new FileWriter(newFileName); 
+                    writer.write (gameScreen.save (newFileName));
+                    writer.close ();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

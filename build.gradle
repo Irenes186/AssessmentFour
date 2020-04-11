@@ -73,6 +73,7 @@ project(":core") {
         api "com.rafaskoberg.gdx:typing-label:$typingLabelVersion"
         //api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         //api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        compile fileTree(dir: 'libs', include: '*.jar')
     }
 }
 project(":tests") {
