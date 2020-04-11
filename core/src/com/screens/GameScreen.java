@@ -168,10 +168,11 @@ public class GameScreen implements Screen {
 
 		generateTutorial();
 
-		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-        viewport.apply();
+//		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+//        viewport.apply();
 		
-		this.stage = new Stage(viewport);
+//		this.stage = new Stage(viewport);
+		this.stage = new Stage(new ScreenViewport());
 		this.stage.setDebugAll(DEBUG_ENABLED);
 
 		Table table = new Table();
@@ -578,7 +579,7 @@ public class GameScreen implements Screen {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
 //		this.camera.setToOrtho(false, width, height);
-	    viewport.update(width, height);
+	    stage.getViewport().update(width, height);
 		// DISABLED FOR ASSESSMENT 4
 //		vignetteSepiaShader.begin();
 //		vignetteSepiaShader.setUniformf("u_resolution", width, height);
