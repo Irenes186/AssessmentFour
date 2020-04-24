@@ -27,7 +27,7 @@ public abstract class Powerup extends SimpleSprite {
 	
 	public Powerup (Texture spriteTexture, int activeTime) {
 		super(spriteTexture);
-		this.activeTime = activeTime;
+		this.activeTime = (int)(activeTime * (1 / com.misc.Constants.getInstance().difficulty));
 		create();
 	}
 	
