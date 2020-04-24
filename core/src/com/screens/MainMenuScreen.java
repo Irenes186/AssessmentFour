@@ -132,16 +132,19 @@ public class MainMenuScreen implements Screen {
 		TextButton howToPlayButton = new TextButton("How to Play", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
 
-    File saveDir = new File ("saves/");
-    TextButton loadButton = new TextButton("Load", skin);
-    SelectBox <String> saveSelect = new SelectBox <String>(skin);
-
-    File[] files = saveDir.listFiles();
-    int numberOfFiles = files.length;
-    String[] fileNames = new String [numberOfFiles];
-
-    for (int i = 0; i < numberOfFiles; i++) {
-        fileNames[i] = files[i].getName();
+        File saveDir = new File ("saves/");
+        if (!saveDir.exists()) {
+            saveDir.mkdir();
+        }
+        TextButton loadButton = new TextButton("Load", skin);
+        SelectBox <String> saveSelect = new SelectBox <String>(skin);
+    
+        File[] files = saveDir.listFiles();
+        int numberOfFiles = files.length;
+        String[] fileNames = new String [numberOfFiles];
+    
+        for (int i = 0; i < numberOfFiles; i++) {
+            fileNames[i] = files[i].getName();
     }
 
     saveSelect.setItems(fileNames);
