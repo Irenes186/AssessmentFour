@@ -24,7 +24,7 @@ public class SimpleSpriteTest {
     @Before
     public void setUp() {
         initMocks(this);
-        simpleSpriteUnderTest = new SimpleSprite(mockSpriteTexture);
+        simpleSpriteUnderTest = new SimpleSprite(mockSpriteTexture, null);
     }
 
     @Test
