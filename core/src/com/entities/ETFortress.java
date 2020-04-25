@@ -117,10 +117,20 @@ public class ETFortress extends SimpleSprite {
         renderer.circle(this.getCentreX(), this.getCentreY(), this.type.getRange());
     }
 
+    /**
+     * Returns whether or not the fortess has been flooded
+     * 
+     * @return boolean true if the fortress has been flooded otherwise false
+     */
     public boolean isFlooded() {
         return this.flooded;
     }
 
+    /**
+     * Return which type of fortress this is from the fortresstype enum
+     * 
+     * @return FortressType which fortress this is
+     */
     public FortressType getType() {
         return this.type;
     }
