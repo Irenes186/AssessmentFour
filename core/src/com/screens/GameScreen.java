@@ -108,6 +108,7 @@ public class GameScreen implements Screen {
 	private Queue<String> popupMessages;
 	private final TypingLabel tip;
 	private boolean isInTutorial;
+	private boolean skipTutorial;
 
 	// timers to manage timed events
 	private final Timer popupTimer;
@@ -129,7 +130,7 @@ public class GameScreen implements Screen {
 	public GameScreen(final Kroy game) {
 		// Assign the game to a property so it can be used when transitioning screens
 		this.game = game;
-
+		this.skipTutorial = false;
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
 
 		// Create an orthographic camera
@@ -333,7 +334,7 @@ public class GameScreen implements Screen {
   public GameScreen (final Kroy game, ArrayList<String> saveContents) {
     this(game);
     this.isInTutorial = false;
-
+	this.skipTutorial = true;
     JSONParser parser = new JSONParser();
 
     try {
@@ -746,7 +747,8 @@ public class GameScreen implements Screen {
 				        newPow = new RepairPowerup(new Texture("powerups/health.png"));
 				        break;
 				    case 3:
-				        newPow = new RefillPowerup(new Texture("powerups/water.png"));
+						newPow = new RefillPowerup(new Texture("powerups/water.png"));
+						break;
 				    case 4:
 				        newPow = new SpeedPowerup(new Texture("powerups/speed.png"), 600);
 				        break;
@@ -1238,7 +1240,7 @@ public class GameScreen implements Screen {
 	 */
 	private void nextPopup() {
 		tip.setText("");
-		if (popupMessages.notEmpty()) {
+		if (popupMessages.notEmpty() && !this.skipTutorial) {
 			tip.setText(popupMessages.removeFirst());
 		} else {
 			finishTutorial();
