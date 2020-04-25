@@ -4,16 +4,20 @@ package com.sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.MathUtils;
+import com.misc.Constants;
 import com.misc.Constants.Direction;
 //import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // Constants import
 
 import static com.misc.Constants.TILE_DIMS;
+import static com.misc.Constants.FIRETRUCK_ROTATIONRATE;
 
 /**
  * MovementSprite adds movement facilities to a sprite.
@@ -25,6 +29,7 @@ public class MovementSprite extends SimpleSprite {
     // physics values
     private float accelerationRate, decelerationRate, maxSpeed, rotationLockTime;
     private Vector2 speed;
+    private float speedMagnitude;
 
     // layer that provides collisions
     private TiledMapTileLayer collisionLayer;
@@ -36,7 +41,7 @@ public class MovementSprite extends SimpleSprite {
      * @param collisionLayer The layer of the map the sprite will collide with.
      */
     public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer) {
-        super(spriteTexture);
+        super(spriteTexture, collisionLayer);
         this.collisionLayer = collisionLayer;
         this.create();
     }
@@ -47,17 +52,18 @@ public class MovementSprite extends SimpleSprite {
      * @param spriteTexture  The texture the sprite should use.
      */
     public MovementSprite(Texture spriteTexture) {
-        super(spriteTexture);
+        super(spriteTexture, null);
         this.create();
     }
 
     /**
-     * Sets the inital values for all properties needed by the sprite.
+     * Sets the initial values for all properties needed by the sprite.
      */
     private void create() {
-        this.speed = new Vector2(0,0);
+        this.speed = new Vector2();
+        this.speedMagnitude = 0;
         this.accelerationRate = 10;
-        this.decelerationRate = 6;
+        this.decelerationRate = 1;
         this.rotationLockTime = 0;
         this.maxSpeed = 200;
     }
@@ -72,7 +78,7 @@ public class MovementSprite extends SimpleSprite {
         accelerate();
 
         // Rotate sprite to face the direction its moving in
-        updateRotation();
+//        updateRotation();
 
         super.update(batch);
         // Update rotationLockout if set
@@ -84,34 +90,25 @@ public class MovementSprite extends SimpleSprite {
      * @param direction The direction to accelerate in.
      */
     public void applyAcceleration(Direction direction) {
-        if (this.speed.y < this.maxSpeed && direction == Direction.UP) {
-            this.speed.y += this.accelerationRate;
+        if (speedMagnitude < maxSpeed && direction == Direction.UP) {
+            speedMagnitude += this.accelerationRate;
+            speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
+            speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
+//            speedMagnitude = (float) Math.sqrt(Math.pow(speed.x, 2) + Math.pow(speed.y, 2));
         }
-        if (this.speed.y > -this.maxSpeed && direction == Direction.DOWN) {
-            this.speed.y -= this.accelerationRate;
+        if (speedMagnitude > -this.maxSpeed && direction == Direction.DOWN) {
+            speedMagnitude -= this.accelerationRate;
+            speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
+            speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
         }
-        if (this.speed.x < this.maxSpeed && direction == Direction.RIGHT) {
-            this.speed.x += this.accelerationRate;
+        if (direction == Direction.RIGHT) {
+            this.rotate(-FIRETRUCK_ROTATIONRATE * Gdx.graphics.getDeltaTime());
         }
-        if (this.speed.x > -this.maxSpeed && direction == Direction.LEFT) {
-            this.speed.x -= this.accelerationRate;
+        if (direction == Direction.LEFT) {
+            this.rotate(FIRETRUCK_ROTATIONRATE * Gdx.graphics.getDeltaTime());
         }
     }
 
-    /**
-     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
-     */
-    private void updateRotation() {
-        float currentRotation = this.getRotation();
-        float desiredRotation = this.speed.angle();
-        float angle = desiredRotation - currentRotation;
-        if (this.speed.len() >= this.accelerationRate && this.rotationLockTime <= 0) {
-            // Use the shortest angle
-            angle = (angle + 180) % 360 - 180;
-            float rotationSpeed = 0.05f * this.speed.len();
-            this.rotate(angle * rotationSpeed * Gdx.graphics.getDeltaTime());
-        }
-    }
 
     /*
      *  =======================================================================
@@ -123,23 +120,31 @@ public class MovementSprite extends SimpleSprite {
      * existing acceleration.
      */
     private void accelerate() {
-        // Calculate whether it hits any boundaries
-        int collisions = collidesWithBlockedTile(this.collisionLayer);
+        float oldX = this.getX();
+        float oldY = this.getY();
+        this.movementHitBox.setPosition(oldX + speed.x * Gdx.graphics.getDeltaTime(), oldY + speed.y * Gdx.graphics.getDeltaTime());
+        Constants.Direction collisiondirection = this.collisionDirection(this.collisionLayer);
         // Check if it collides with any tiles, then move the sprite
-        if (collisions == 0) {
-            this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
-            this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
-            if (this.decelerationRate != 0) decelerate();
-        } else if (collisions == 1){
-            // Separate the sprite from the tile and stop sprite movement
-            if (Math.abs(this.speed.x) > Math.abs(this.speed.y)) {
-                this.speed = new Vector2(this.speed.x*.85f, -this.speed.y*.75f);
-            } else {
-                this.speed = new Vector2(-this.speed.x*.75f, this.speed.y*.75f);
-            }
-        } else {
-            this.speed = new Vector2(-(this.speed.x*0.7f), -(this.speed.y*0.7f));
+        switch (collisiondirection) {
+            case LEFT:
+            case RIGHT:
+                speedMagnitude = speed.y;
+                speed.x = 0;
+                this.movementHitBox.setPosition(oldX, this.movementHitBox.getY());
+                this.setY(oldY + speed.y * Gdx.graphics.getDeltaTime());
+                break;
+            case UP:
+            case DOWN:
+                speedMagnitude = speed.x;
+                speed.y = 0;
+                this.setX(oldX + speed.x * Gdx.graphics.getDeltaTime());
+                this.movementHitBox.setPosition(this.movementHitBox.getX(), oldY);
+                break;
+            default:
+                this.setX(oldX + speed.x * Gdx.graphics.getDeltaTime());
+                this.setY(oldY + speed.y * Gdx.graphics.getDeltaTime());
         }
+        if (this.decelerationRate != 0) decelerate();
     }
 
     /**
@@ -147,61 +152,19 @@ public class MovementSprite extends SimpleSprite {
      * is based upon the sprite's properties.
      */
     private void decelerate() {
-        // Stops it bouncing from decelerating in one direction and then another etc..
-        if (this.speed.y < this.decelerationRate && this.speed.y > -this.decelerationRate) {
-            this.speed.y = 0f;
+        if (speedMagnitude >= decelerationRate) {
+            speedMagnitude -= decelerationRate * Gdx.graphics.getDeltaTime();
+            speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
+            speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
+        } else if (speedMagnitude <= -decelerationRate) {
+            speedMagnitude += decelerationRate * Gdx.graphics.getDeltaTime();
+            speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
+            speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
         } else {
-            this.speed.y -= this.speed.y > 0 ? this.decelerationRate : -this.decelerationRate;
+            speedMagnitude = 0;
+            speed.x = 0;
+            speed.y = 0;
         }
-        if (this.speed.x < this.decelerationRate && this.speed.x > -this.decelerationRate) {
-            this.speed.x = 0f;
-        } else {
-            this.speed.x -= this.speed.x > 0 ? this.decelerationRate : -this.decelerationRate;
-        }
-    }
-
-    /*
-     *  =======================================================================
-     *                          Modified for Assessment 3
-     *  =======================================================================
-     */
-    /**
-     * Checks if the tile at a location is a "blocked" tile or not.
-     * @return Whether the hits a collision object (true) or not (false)
-     */
-    private int collidesWithBlockedTile(TiledMapTileLayer layer) {
-        int collisions = 0;
-        if (layer != null) {
-            for (Vector2 vertex : getPolygonVertices(super.getMovementHitBox())) {
-                if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
-                    collisions++;
-                }
-            }
-        }
-        return collisions;
-    }
-
-    /*
-     *  =======================================================================
-     *                          Added for Assessment 3
-     *  =======================================================================
-     */
-    /**
-     * Gets the coordinates, as Vector2s for each vertex
-     * of the polygon
-     *
-     * @param polygon   to get coordinates of
-     * @return          list of coordinates
-     */
-    protected Array<Vector2> getPolygonVertices(Polygon polygon) {
-        float[] vertices = polygon.getTransformedVertices();
-        Array<Vector2> result = new Array<>();
-        for (int i = 0; i < vertices.length/2; i++) {
-            float x = vertices[i * 2];
-            float y = vertices[i * 2 + 1];
-            result.add(new Vector2(x, y));
-        }
-        return result;
     }
 
     /**
@@ -245,6 +208,7 @@ public class MovementSprite extends SimpleSprite {
      * @param speed The speed the sprite should travel.
      */
     public void setSpeed(Vector2 speed) {
-        this.speed = speed;
+        this.speed.x = speed.x;
+        this.speed.y = speed.y;
     }
 }

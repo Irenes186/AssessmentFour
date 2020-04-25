@@ -54,7 +54,7 @@ public class Firestation extends SimpleSprite {
      * @param gameScreen        GameScreen to be able to send popup messages to
      */
     public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, GameScreen gameScreen) {
-        super(texture);
+        super(texture, null);
         this.destroyed = destroyedTexture;
         this.gameScreen = gameScreen;
         this.setPosition(xPos, yPos);

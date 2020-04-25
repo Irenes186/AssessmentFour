@@ -82,6 +82,7 @@ public class Projectile extends MovementSprite {
 
         // Give the projectile the vector to travel at
         this.rotate(trajectory.angle());
+//        this.setSpeed((float) Math.sqrt(Math.pow(trajectory.x, 2) + Math.pow(trajectory.y, 2)));
         this.setSpeed(trajectory);
     }
 
