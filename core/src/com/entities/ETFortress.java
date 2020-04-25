@@ -49,7 +49,7 @@ public class ETFortress extends SimpleSprite {
      * @param gameScreen        GameScreen to send popup messages to
      */
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, FortressType type, GameScreen gameScreen) {
-        super(texture);
+        super(texture, null);
         this.gameScreen = gameScreen;
         this.destroyed = destroyedTexture;
         this.flooded = false;

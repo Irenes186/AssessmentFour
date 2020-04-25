@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
@@ -18,6 +20,8 @@ import com.Kroy;
 import com.misc.SFX;
 
 import static com.misc.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.SCREEN_HEIGHT;
+import static com.misc.Constants.SCREEN_WIDTH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,14 +67,16 @@ public class MainMenuScreen implements Screen {
 
 		// Create an orthographic camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
 		/* tell the SpriteBatch to render in the
 		   coordinate system specified by the camera. */
 		game.spriteBatch.setProjectionMatrix(camera.combined);
 
 		// Create a viewport
-		viewport = new ScreenViewport(camera);
-		viewport.apply(true);
+//		viewport = new ScreenViewport(camera);
+//		viewport.apply(true);
+		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+		viewport.apply();
 
 		// Set camera to centre of viewport
 		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);

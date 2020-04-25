@@ -52,7 +52,7 @@ public class PatrolMovementSprite extends SimpleSprite {
      * @param mapGraph       mapGraph that contains all the junctions in the map
      */
     public PatrolMovementSprite(Texture spriteTexture, MapGraph mapGraph){
-        super(spriteTexture);
+        super(spriteTexture, null);
 
         this.mapGraph = mapGraph;
         this.pathQueue = new Queue<>();

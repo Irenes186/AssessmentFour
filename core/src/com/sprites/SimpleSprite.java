@@ -4,13 +4,21 @@ package com.sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.graphics.g2d.Batch;
+
+import static com.misc.Constants.TILE_DIMS;
+
 import com.badlogic.gdx.graphics.Texture;
 
 // Class import
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.misc.Constants;
 import com.misc.ResourceBar;
+import com.misc.Constants.Direction;
 
 /**
  * Simplify and add functionality to the sprite object provided by libGDX.
@@ -26,8 +34,9 @@ public class SimpleSprite extends Sprite {
     private ResourceBar healthBar;
 
     // hit boxes, only not equal for fire truck
-    private Polygon movementHitBox;
+    protected Polygon movementHitBox;
     private Polygon damageHitBox;
+    protected TiledMapTileLayer blockedTilesLayer;
 
     // center of the sprite
     private Vector2 centre;
@@ -38,9 +47,10 @@ public class SimpleSprite extends Sprite {
      *
      * @param spriteTexture  The texture the sprite should use.
      */
-    public SimpleSprite(Texture spriteTexture) {
+    public SimpleSprite(Texture spriteTexture, TiledMapTileLayer blockedTilesLayer) {
         super(spriteTexture);
         this.texture = spriteTexture;
+        this.blockedTilesLayer = blockedTilesLayer;
         this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.create();
     }
@@ -56,7 +66,9 @@ public class SimpleSprite extends Sprite {
     private void create() {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
-        this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        // {0f, 0f, 0f, height / 2, 0f, this.height, this.width / 2, this.height, this.width, this.height, width, height/2,this.width, 0f, width/2, 0}
+        this.movementHitBox = new Polygon(new float[] {0f, 0f, 0f, this.height, this.width, this.height, this.width, 0f});
+        this.movementHitBox.setOrigin(this.width / 2, this.height / 2);
         this.damageHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
         // Start internal time at 150, used for animations/timeouts
         this.internalTime = 150;
@@ -103,7 +115,7 @@ public class SimpleSprite extends Sprite {
      * @param renderer   The shape renderer to draw onto.
      */
     public void drawDebug(ShapeRenderer renderer) {
-        renderer.polygon(this.damageHitBox.getTransformedVertices());
+//        renderer.polygon(this.damageHitBox.getTransformedVertices());
         renderer.polygon(this.movementHitBox.getTransformedVertices());
     }
 
@@ -142,9 +154,57 @@ public class SimpleSprite extends Sprite {
      * @param rotation  amount in degrees to rotate the hitbox by
      */
     public void setMovementHitBox(float rotation) {
-        this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
+        this.movementHitBox = new Polygon(new float[] {0f, 0f, 0f, this.height, this.width, this.height, this.width, 0f});
         this.movementHitBox.setOrigin(width/2, height/2);
         this.movementHitBox.rotate(rotation);
+    }
+    
+    
+    protected Array<Vector2> getPolygonVertices(Polygon polygon) {
+        float[] vertices = polygon.getTransformedVertices();
+        Array<Vector2> result = new Array<>();
+        for (int i = 0; i < vertices.length/2; i++) {
+            float x = vertices[i * 2];
+            float y = vertices[i * 2 + 1];
+            result.add(new Vector2(x, y));
+        }
+        return result;
+    }
+    
+    
+    protected int collidesWithBlockedTile(TiledMapTileLayer layer) {
+        int collisions = 0;
+        if (layer != null) {
+            for (Vector2 vertex : getPolygonVertices(movementHitBox)) {
+                if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+                    collisions++;
+                }
+            }
+        }
+        return collisions;
+    }
+    
+    protected Constants.Direction collisionDirection(TiledMapTileLayer layer) {
+        if (layer != null) {
+            Array<Vector2> vertices = getPolygonVertices(movementHitBox);
+            for (int i = 0; i < vertices.size; i++) {
+                Vector2 vertex = vertices.get(i);
+                if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+                    int prev = Math.floorMod(i - 1, vertices.size);
+                    int next = Math.floorMod(i + 1, vertices.size);
+                    if (vertices.get(prev).x <= vertex.x && vertices.get(next).x <= vertex.x) {
+                        return Direction.RIGHT;
+                    } else if (vertices.get(prev).x >= vertex.x && vertices.get(next).x >= vertex.x) {
+                        return Direction.LEFT;
+                    } else if (vertices.get(prev).y <= vertex.y && vertices.get(next).y <= vertex.y) {
+                        return Direction.DOWN;
+                    } else {
+                        return Direction.UP;
+                    }
+                }
+            }
+        }
+        return Constants.Direction.NONE;
     }
 
     /**
@@ -153,9 +213,13 @@ public class SimpleSprite extends Sprite {
      */
     @Override
     public void rotate(float degrees) {
-        super.rotate(degrees);
         this.movementHitBox.rotate(degrees);
-        this.damageHitBox.rotate(degrees);
+        if (this.blockedTilesLayer == null || collidesWithBlockedTile(this.blockedTilesLayer) == 0) {
+            super.rotate(degrees);
+            this.damageHitBox.rotate(degrees);
+        } else {
+            this.movementHitBox.setRotation(this.getRotation());
+        }
     }
 
     /**

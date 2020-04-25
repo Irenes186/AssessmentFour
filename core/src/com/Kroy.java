@@ -35,7 +35,7 @@ public class Kroy extends Game {
 	 * Display the main menu screen upon game start.
 	 */
 	public void create() {
-		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+//		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
 
 		this.setFonts();

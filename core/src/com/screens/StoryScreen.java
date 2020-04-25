@@ -103,9 +103,9 @@ public class StoryScreen implements Screen {
         TextButton hardButton = new TextButton("Hard", skin);
 
         // Add buttons to table and style them
-        table.add(easyButton).width(200).height(40).padBottom(40);
-        table.add(mediumButton).width(200).height(40).padBottom(40);
-        table.add(hardButton).width(200).height(40).padBottom(40);
+        table.add(easyButton);
+        table.add(mediumButton);
+        table.add(hardButton);
         table.add(storyLabel).expand();
         table.row().colspan(2);
         
@@ -166,8 +166,9 @@ public class StoryScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = width;
-        camera.viewportHeight = height;
+//        stage.getViewport().update(width, height);
+//        camera.viewportHeight = width;
+//        camera.viewportHeight = height;
         viewport.update(width, height);
         camera.update();
     }

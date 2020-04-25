@@ -20,13 +20,13 @@ public abstract class Powerup extends SimpleSprite {
 
 	// Basic constructor with no powerup timeout
 	public Powerup (Texture spriteTexture) {
-		super(spriteTexture);
+		super(spriteTexture, null);
 		activeTime = -1;
 		create();
 	}
 	
 	public Powerup (Texture spriteTexture, int activeTime) {
-		super(spriteTexture);
+		super(spriteTexture, null);
 		this.activeTime = activeTime;
 		create();
 	}

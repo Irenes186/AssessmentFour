@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.entities.Firestation;
 import com.misc.SFX;
@@ -117,6 +118,7 @@ public class GameScreen implements Screen {
 	private final GameInputHandler gameInputHandler;
 	
 	Random powGenerator;
+//	ExtendViewport viewport;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -165,6 +167,8 @@ public class GameScreen implements Screen {
 		generateTutorial();
 
 		this.stage = new Stage(new ScreenViewport());
+//		viewport = new ExtendViewport(MAP_SCALE * 0.1f, MAP_SCALE * 0.1f, this.camera);
+//		this.stage = new Stage(viewport);
 		this.stage.setDebugAll(DEBUG_ENABLED);
 
 		Table table = new Table();
@@ -786,7 +790,7 @@ public class GameScreen implements Screen {
 				popupTimer.stop();
 				ETPatrolsTimer.stop();
 				this.minigameSprites.remove(minigameSprite);
-				this.firestation.getActiveFireTruck().setSpeed(new Vector2(0, 0));
+				this.firestation.getActiveFireTruck().setSpeed(Vector2.Zero);
 				this.firestation.getActiveFireTruck().setHose(false);
 				this.game.setScreen(new MinigameScreen(this.game, this));
 			}
