@@ -308,7 +308,9 @@ public class GameScreen implements Screen {
 		}, 7,10);
 
 		isInTutorial = true;
-
+		if(com.misc.Constants.getInstance().difficulty == 1.5) {
+			finishTutorial();
+		}
 		powGenerator = new Random();
 
 

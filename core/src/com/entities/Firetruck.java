@@ -499,7 +499,7 @@ public class Firetruck extends MovementSprite {
     }
 
     public float getPrice() {
-        return this.getType().getProperties()[6];
+        return this.getType().getProperties()[6] * (com.misc.Constants.getInstance().difficulty);
     }
 
     public float getDamage() {
