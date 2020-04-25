@@ -49,7 +49,7 @@ public class ETFortress extends SimpleSprite {
      * @param gameScreen        GameScreen to send popup messages to
      */
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, FortressType type, GameScreen gameScreen) {
-        super(texture);
+        super(texture, null);
         this.gameScreen = gameScreen;
         this.destroyed = destroyedTexture;
         this.flooded = false;
@@ -117,14 +117,29 @@ public class ETFortress extends SimpleSprite {
         renderer.circle(this.getCentreX(), this.getCentreY(), this.type.getRange());
     }
 
+    /**
+     * Returns whether or not the fortess has been flooded
+     * 
+     * @return boolean true if the fortress has been flooded otherwise false
+     */
     public boolean isFlooded() {
         return this.flooded;
     }
 
+    /**
+     * Return which type of fortress this is from the fortresstype enum
+     * 
+     * @return FortressType which fortress this is
+     */
     public FortressType getType() {
         return this.type;
     }
 
+    /**
+     * Collects all the data about the aobject and packages it in a JSON string
+     * 
+     * @return String the JSON string representation of this object
+     */
     public String save() {
 
         JSONObject json = new JSONObject();

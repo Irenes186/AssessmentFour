@@ -43,8 +43,20 @@ public class Alien extends Sprite {
         this.spawnTime = TimeUtils.millis();
     }
 
+    /**
+     * Return the score to be added to the
+     * total when this alien is killed
+     * 
+     * @return int the score of this alien
+     */
     public int getScore() { return this.type.getScore(); }
 
+
+    /**
+     * Returns the alien's initial spawn time
+     * 
+     * @return long the time the alien was pawned
+     */
     public long getSpawnTime() {
         return this.spawnTime;
     }

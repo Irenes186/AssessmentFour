@@ -54,7 +54,7 @@ public class Firestation extends SimpleSprite {
      * @param gameScreen        GameScreen to be able to send popup messages to
      */
     public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, GameScreen gameScreen) {
-        super(texture);
+        super(texture, null);
         this.destroyed = destroyedTexture;
         this.gameScreen = gameScreen;
         this.setPosition(xPos, yPos);
@@ -274,6 +274,12 @@ public class Firestation extends SimpleSprite {
         return this.isDestroyed;
     }
 
+    /**
+     * Collects the information about all the firetrucks in the game 
+     * and returns their data in a JSON string
+     * 
+     * @return String JSON string holding the value of the associated fire trucks
+     */
     public String save() {
         JSONObject json = new JSONObject();
 

@@ -72,7 +72,8 @@ public class Firetruck extends MovementSprite {
 
     // powerups
  	private HashMap<Powerup, Integer> activePowerups;
- 	// private HashMap inactivePowerups;
+
+ 	private Polygon wallHitBox;
 
     /**
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
@@ -460,7 +461,7 @@ public class Firetruck extends MovementSprite {
     public void respawn() {
         this.setPosition(this.location.getLocation().x, this.location.getLocation().y);
         this.resetSprite();
-        this.setSpeed(new Vector2(0, 0));
+        this.setSpeed(Vector2.Zero);
     }
 
     /**
@@ -566,6 +567,11 @@ public class Firetruck extends MovementSprite {
         this.isAlive = isAlive;
     }
 
+    /**
+     * Gets the data about this firetruck and returns it as a JSON object
+     * 
+     * @return JSONObject The JSON object containing all the information about the firetruck
+     */
     public JSONObject save() {
         JSONObject json = new JSONObject();
 

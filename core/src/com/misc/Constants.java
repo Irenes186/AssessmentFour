@@ -27,7 +27,8 @@ public class Constants {
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        RIGHT,
+        NONE
     }
 
     public enum Outcome {
@@ -239,4 +240,6 @@ public class Constants {
     public static final float ETFORTRESS_HEIGHT =5*TILE_DIMS;
     public static final float PROJECTILE_WIDTH = TILE_DIMS;
     public static final float PROJECTILE_HEIGHT =0.5f*TILE_DIMS;
+    
+    public static final float FIRETRUCK_ROTATIONRATE = 200.0f;
 }
