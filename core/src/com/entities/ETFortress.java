@@ -135,6 +135,11 @@ public class ETFortress extends SimpleSprite {
         return this.type;
     }
 
+    /**
+     * Collects all the data about the aobject and packages it in a JSON string
+     * 
+     * @return String the JSON string representation of this object
+     */
     public String save() {
 
         JSONObject json = new JSONObject();

@@ -274,6 +274,12 @@ public class Firestation extends SimpleSprite {
         return this.isDestroyed;
     }
 
+    /**
+     * Collects the information about all the firetrucks in the game 
+     * and returns their data in a JSON string
+     * 
+     * @return String JSON string holding the value of the associated fire trucks
+     */
     public String save() {
         JSONObject json = new JSONObject();
 

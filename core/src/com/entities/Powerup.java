@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.sprites.SimpleSprite;
 
+/**
+ * Abstract class that is used to create the classes for specific powerups
+ * and holds logic for assigning powerups and rendering them
+ */
 public abstract class Powerup extends SimpleSprite {
     // Time in frames for a powerup to be active
     // TODO: Change to seconds
@@ -18,19 +22,32 @@ public abstract class Powerup extends SimpleSprite {
 
   protected String type;
 
-	// Basic constructor with no powerup timeout
+	/**
+	 * Basic constructor with no powerup timeout 
+	 * 
+	 * @param spriteTexture
+	 */
 	public Powerup (Texture spriteTexture) {
 		super(spriteTexture, null);
 		activeTime = -1;
 		create();
 	}
 	
+	/**
+	 * Constructor for when the powerup has an active time
+	 * 
+	 * @param spriteTexture
+	 * @param activeTime
+	 */
 	public Powerup (Texture spriteTexture, int activeTime) {
 		super(spriteTexture, null);
 		this.activeTime = activeTime;
 		create();
 	}
 	
+	/**
+	 * Initialises basic variables to default values
+	 */
 	private void create() {
 		currentActiveTime = 0;
 		target = null;
@@ -38,20 +55,26 @@ public abstract class Powerup extends SimpleSprite {
 		firstApply = true;
 	}
 	
+	/**
+	 * Add this powerup to the target fireTruck
+	 */
 	public void queuePowerup (Firetruck target) {
 		target.activatePowerup(this, activeTime);
 		this.target = target;
 	}
 	
+	/**
+	 * Remove this powerup from the target firetruck
+	 */
 	public void dequeuePowerup () {
 		target.deactivatePowerup(this);
 		this.target = null;
 		this.pickedUp = false;
 	}
 	
-	/* Apply the powerup's effects to the specified fireengine
+	/** Apply the powerup's effects to the specified fireengine
 	 * 
-	 * return true if the powerup was applied successfully, false otherwise
+	 * @return true if the powerup was applied successfully, false otherwise
 	 */
 	public boolean applyPowerup () {
 	    if (firstApply) {

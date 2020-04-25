@@ -35,9 +35,8 @@ public class DamagePowerup extends Powerup {
         target.setDamage(oldDamage * 2);
     }
 
-    /**
-     * Required by the Powerup base 
-     * class for certain powerups
+    /*
+     * Required by the Powerup base class
      */
     @Override
     protected boolean doPowerupLogic() {return true;}

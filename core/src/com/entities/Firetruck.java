@@ -567,6 +567,11 @@ public class Firetruck extends MovementSprite {
         this.isAlive = isAlive;
     }
 
+    /**
+     * Gets the data about this firetruck and returns it as a JSON object
+     * 
+     * @return JSONObject The JSON object containing all the information about the firetruck
+     */
     public JSONObject save() {
         JSONObject json = new JSONObject();
 
