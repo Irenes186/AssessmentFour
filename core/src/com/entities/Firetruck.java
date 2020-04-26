@@ -592,4 +592,8 @@ public class Firetruck extends MovementSprite {
 
         return json;
     }
+
+    public void takeDamage(int dam) {
+        getHealthBar().subtractResourceAmount((int) (dam * (1-getArmour())));
+    }
 }
