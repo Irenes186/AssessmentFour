@@ -344,8 +344,14 @@ public class GameScreen implements Screen {
 
       ArrayList<Firetruck> currentTrucks = firestation.getParkedFireTrucks();
       currentTrucks.add(firestation.getActiveFireTruck());
-
-      for (Firetruck firetruck : currentTrucks) {
+      if ((Boolean)trucks.get("isDestroyed")){
+        firestation.destroy();
+      } else {
+        firestation.getHealthBar().setCurrentAmount((int)((double)trucks.get("Health")));
+      }
+      firestation.setVulnerable((Boolean)trucks.get("isVulnerable"));
+      
+        for (Firetruck firetruck : currentTrucks) {
         String fireTruckColour = firetruck.getType().getColourString();
 
         if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
