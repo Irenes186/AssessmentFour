@@ -86,7 +86,7 @@ public class Constants {
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 550,  // WATER MAX
-                0,    // PRICE
+                100,    // PRICE
                 2.1f,    // damage
         }),
         BLUE ("Blue", new float[]{
