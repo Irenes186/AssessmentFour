@@ -244,4 +244,20 @@ public class SaveTest {
         
         assertTrue(gameScreenDummy.getFirestation().isDestroyed());
     }
+    
+    @Test
+    public void testSaveActiveTruck() {
+        for (int i = 0; i < gameScreenDummy.getFirestation().getParkedFireTrucks().size(); i++) {
+            Firetruck truck = gameScreenDummy.getFirestation().getParkedFireTrucks().get(i);
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                truck.buy();
+                gameScreenDummy.getFirestation().changeFiretruck(i);
+            }
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getType() == Constants.TruckType.BLUE);
+    }
 }
