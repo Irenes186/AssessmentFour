@@ -337,6 +337,228 @@ public class GameScreen implements Screen {
 //        testPowerup5.queuePowerup(this.firestation.getActiveFireTruck());
 
 	}
+	
+	/**
+	 * Dummy constructor to be used only in tests.
+	 * 
+	 * @param saveContents
+	 * @param isTest
+	 */
+	public GameScreen(ArrayList<String> saveContents, boolean isTest) {
+	    if (!isTest) {
+	        throw new IllegalArgumentException("Cannot use this constructor outside of tests");
+	    }
+	    
+	    game = null;
+	    shapeRenderer = null;
+	    camera = null;
+	    vignetteSepiaShader = null;
+	    renderer = null;
+	    minigameSprites = null;
+	    stage = null;
+	    scoreLabel = null;
+	    timeLabel = null;
+	    fpsLabel = null;
+	    tip = null;
+	    carparkScreen = null;
+	    gameInputHandler = null;
+	    
+	    Texture dummyTexture = new Texture("garage.jpg");
+	    ArrayList<Texture> dummyTextureList = new ArrayList<Texture>();
+	    dummyTextureList.add(dummyTexture);
+
+        // Load the map, set the unit scale
+        this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
+        
+        // Create an array to store all projectiles in motion
+        this.projectiles = new ArrayList<>();
+
+        // Decrease time every second, starting at 3 minutes
+        this.time = TIME_STATION_VULNERABLE;
+
+        // ---- 3) Construct all textures to be used in the game here, ONCE ------ //
+
+        // Select background and foreground map layers, order matters
+        MapLayers mapLayers = map.getLayers();
+        TiledMapTileLayer collisionLayer = (TiledMapTileLayer) mapLayers.get("Collision");
+        TiledMapTileLayer carparkLayer = (TiledMapTileLayer) mapLayers.get("Carpark");
+        
+        this.foregroundLayers = new int[] {
+            mapLayers.getIndex("Buildings"),
+            mapLayers.getIndex("Carpark")
+        };
+        this.backgroundLayers = new int[] {
+            mapLayers.getIndex("River"),
+            mapLayers.getIndex("Road"),
+            mapLayers.getIndex("Trees")
+        };
+
+        this.projectileTexture = dummyTexture;
+
+        // Create arrays of textures for animations
+        waterFrames = dummyTextureList;
+
+        // Create patrol texture
+        this.patrolTextures = dummyTextureList;
+
+        // ---- 4) Create entities that will be around for entire game duration - //
+
+        // Create a new firestation
+        this.firestation = new Firestation(dummyTexture, dummyTexture, 0, 0, this);
+
+        // Initialise firetrucks array and add firetrucks to it
+        firestation.setActiveFireTruck(new Firetruck(dummyTextureList, dummyTextureList, TruckType.RED,
+                collisionLayer, carparkLayer,
+                firestation, true));
+        firestation.parkFireTruck(new Firetruck(dummyTextureList, dummyTextureList, TruckType.BLUE,
+                collisionLayer, carparkLayer,
+                firestation, false));
+        firestation.parkFireTruck(new Firetruck(dummyTextureList, dummyTextureList, TruckType.YELLOW,
+                collisionLayer, carparkLayer,
+                firestation, false));
+        firestation.parkFireTruck(new Firetruck(dummyTextureList, dummyTextureList, TruckType.GREEN,
+                collisionLayer, carparkLayer,
+                firestation, false));
+
+        // Initialise ETFortresses array and add ETFortresses to it
+        this.ETFortresses = new ArrayList<ETFortress>();
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS, FortressType.CLIFFORD, this));
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER, this));
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL, this));
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
+        this.ETFortresses.add(new ETFortress(dummyTexture, dummyTexture, 1.5f, 1.5f, 106 * TILE_DIMS, 101 * TILE_DIMS, FortressType.MOSSY, this));
+
+        // Create array to collect entities that are no longer used
+        this.projectilesToRemove = new ArrayList<Projectile>();
+
+        this.junctionsInMap = new ArrayList<>();
+        mapGraph = new MapGraph();
+        Junction J0 = new Junction(0, 0, "zero");
+        Junction J1 = new Junction(1, 1, "one");
+        mapGraph.addJunction(J0);
+        mapGraph.addJunction(J1);
+        mapGraph.connectJunctions(J0, J1);
+
+        firestationTimer = new Timer();
+        firestationTimer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                decreaseTime();
+            }
+        }, 1, 1);
+        firestationTimer.stop();
+
+        popupTimer = new Timer();
+        popupTimer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                nextPopup();
+            }
+        }, 3f, 10f);
+        popupTimer.stop();
+
+        ETPatrols = new ArrayList<>();
+        ETPatrolsTimer = new Timer();
+        ETPatrolsTimer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                createPatrol();
+            }
+        }, 7,10);
+
+        
+        powGenerator = new Random();
+        if (saveContents.isEmpty()) {
+            return;
+        }
+        JSONParser parser = new JSONParser();
+
+        try {
+          JSONObject trucks = (JSONObject) parser.parse (saveContents.get(0));
+          JSONObject activeTruck =  (JSONObject) parser.parse(trucks.get("ActiveTruck").toString());
+          String newActiveTruckType = activeTruck.get("TruckType").toString();
+
+          ArrayList<Firetruck> currentTrucks = firestation.getParkedFireTrucks();
+          currentTrucks.add(firestation.getActiveFireTruck());
+
+          for (Firetruck firetruck : currentTrucks) {
+            String fireTruckColour = firetruck.getType().getColourString();
+
+            if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
+              String[] newPosition = activeTruck.get("Location").toString().split(", ");
+              firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
+              firetruck.setHealth((int)((double) activeTruck.get("Health")));
+
+              ArrayList <String> powerups = (ArrayList) activeTruck.get("Powerups");
+
+              for (String pow: powerups) {
+                  String[] powerup = pow.split(",");
+
+                  Powerup newPow;
+
+                  switch (powerup[0]) {
+                      case "Damage":
+                          newPow = new DamagePowerup(new Texture("powerups/damage.png"), Integer.parseInt(powerup[1]));
+                      case "Invincible":
+                          newPow = new InvinciblePowerup(new Texture("powerups/invincible.png"), Integer.parseInt(powerup[1]));
+                          break;
+                      case "Repair":
+                          newPow = new RepairPowerup(new Texture("powerups/health.png"));
+                          break;
+                      case "Refill":
+                          newPow = new RefillPowerup(new Texture("powerups/water.png"));
+                          break;
+                      case "Speed":
+                          newPow = new SpeedPowerup(new Texture("powerups/speed.png"), Integer.parseInt(powerup[1]));
+                          break;
+                        default:
+                            throw new RuntimeException("Cannot load save powerup: " + powerup[0]);
+                  }
+
+                  newPow.queuePowerup(firetruck);
+              }
+
+              firestation.setActiveFireTruck(firetruck);
+            }
+            else {
+
+              for (Object key: trucks.keySet()) {
+                if (!(trucks.get(key) instanceof JSONObject)) {
+                  continue;
+                }
+
+                JSONObject truck = (JSONObject) parser.parse(trucks.get(key).toString());
+
+                if (fireTruckColour == truck.get("TruckType")) {
+                  firetruck.setBought ((Boolean) truck.get("Bought"));
+                  firetruck.setAlive ((Boolean) truck.get("Alive"));
+                }
+              }
+            }
+          }
+
+          for (int index = 1; index < saveContents.size() - 1; index++) {
+            JSONObject fortData = (JSONObject) parser.parse(saveContents.get(index));
+
+            for (ETFortress fort : this.ETFortresses) {
+              if (fort.getType().name().equals(fortData.get("FortType"))) {
+                  fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
+              }
+            }
+          }
+          JSONObject gameData = (JSONObject) parser.parse(saveContents.get(saveContents.size() - 1));
+
+          com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
+          this.score = (int)((long) gameData.get("Score"));
+          this.time = (int)((long) gameData.get("Time"));
+
+
+        } catch (ParseException pe) {
+          System.out.println (pe.toString());
+
+        }
+    }
 
   public GameScreen (final Kroy game, ArrayList<String> saveContents) {
     this(game);
