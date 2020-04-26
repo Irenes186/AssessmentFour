@@ -1588,6 +1588,7 @@ public class GameScreen implements Screen {
 	public int getFireStationTime() { return Math.max(this.time, 0); }
 
 	public int getTime() { return this.time; }
+	public void setTime(int newTime) { time = newTime; }
 
 	public int getScore() {
 		return this.score;
