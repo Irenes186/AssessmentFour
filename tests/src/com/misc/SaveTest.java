@@ -251,7 +251,7 @@ public class SaveTest {
     public void testSaveFirestationDestroyed() {
         gameScreenDummy.setTime(0);
         gameScreenDummy.getFirestation().getHealthBar().setCurrentAmount(0);
-        gameScreenDummy.getFirestation().destroy();
+        gameScreenDummy.getFirestation().destroyOnNoHealth();
         
         saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
         gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);

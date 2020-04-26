@@ -82,7 +82,7 @@ public class Firestation extends SimpleSprite {
         }
     }
     
-    public boolean destroy() {
+    public boolean destroyOnNoHealth() {
         if (!isDestroyed && this.getHealthBar().getCurrentAmount() <= 0) {
             this.isDestroyed = true;
             return true;
