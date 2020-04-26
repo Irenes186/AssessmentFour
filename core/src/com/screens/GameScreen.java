@@ -499,18 +499,18 @@ public class GameScreen implements Screen {
 
                   switch (powerup[0]) {
                       case "Damage":
-                          newPow = new DamagePowerup(new Texture("powerups/damage.png"), Integer.parseInt(powerup[1]));
+                          newPow = new DamagePowerup(dummyTexture, Integer.parseInt(powerup[1]));
                       case "Invincible":
-                          newPow = new InvinciblePowerup(new Texture("powerups/invincible.png"), Integer.parseInt(powerup[1]));
+                          newPow = new InvinciblePowerup(dummyTexture, Integer.parseInt(powerup[1]));
                           break;
                       case "Repair":
-                          newPow = new RepairPowerup(new Texture("powerups/health.png"));
+                          newPow = new RepairPowerup(dummyTexture);
                           break;
                       case "Refill":
-                          newPow = new RefillPowerup(new Texture("powerups/water.png"));
+                          newPow = new RefillPowerup(dummyTexture);
                           break;
                       case "Speed":
-                          newPow = new SpeedPowerup(new Texture("powerups/speed.png"), Integer.parseInt(powerup[1]));
+                          newPow = new SpeedPowerup(dummyTexture, Integer.parseInt(powerup[1]));
                           break;
                         default:
                             throw new RuntimeException("Cannot load save powerup: " + powerup[0]);
@@ -1523,6 +1523,14 @@ public class GameScreen implements Screen {
 			if (fortress.isFlooded())
 				fortressesDestroyed++;
 		return new int[]{fortressesDestroyed, this.ETFortresses.size()};
+	}
+	
+	/**
+	 * Return all ETFortresses
+	 * @return
+	 */
+	public ArrayList<ETFortress> getETFortresses() {
+	    return ETFortresses;
 	}
 
 	/*
