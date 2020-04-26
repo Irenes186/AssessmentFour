@@ -234,7 +234,7 @@ public class SaveTest {
     }
     
     @Test
-    public void testSaveDiscovered() {
+    public void testSaveFirestationDestroyed() {
         gameScreenDummy.setTime(0);
         gameScreenDummy.getFirestation().getHealthBar().setCurrentAmount(0);
         assertTrue(gameScreenDummy.getFirestation().destroy());
