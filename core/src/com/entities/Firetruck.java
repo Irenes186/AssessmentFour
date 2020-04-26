@@ -585,6 +585,7 @@ public class Firetruck extends MovementSprite {
         if (this.fireStation.getActiveFireTruck() == this)  {
             json.put("Health", this.getHealthBar().getCurrentAmount());
             json.put("Location", this.getX() + ", " + this.getY());
+            json.put("Rotation",this.getRotation());
 
             ArrayList <String> powerups = new ArrayList <String>();
             activePowerups.forEach((pow,val) -> powerups.add(pow.toString()+","+ Integer.toString(val)));

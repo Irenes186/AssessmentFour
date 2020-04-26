@@ -282,6 +282,16 @@ public class Firestation extends SimpleSprite {
         return this.isDestroyed;
     }
 
+    public void setVulnerable(boolean newValue){
+        this.isVulnerable = newValue;
+    }
+
+    public void destroy(){
+        this.isDestroyed = true;
+        this.getHealthBar().setCurrentAmount(0);
+        this.removeSprite(this.destroyed);
+    }
+
     /**
      * Collects the information about all the firetrucks in the game 
      * and returns their data in a JSON string
@@ -299,6 +309,8 @@ public class Firestation extends SimpleSprite {
 
         json.put("isDestroyed", this.isDestroyed);
         json.put("isVulnerable", this.isVulnerable);
+        json.put("Health",this.getHealthBar().getCurrentAmount());
+
 
         StringWriter out = new StringWriter();
 
