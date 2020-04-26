@@ -113,6 +113,8 @@ public abstract class Powerup extends SimpleSprite {
 	protected abstract boolean doPowerupLogic();
 
 	protected void endPowerup() {}
+	
+	public int getActiveTime() {return activeTime;}
 
   public String toString() {
         return type;
