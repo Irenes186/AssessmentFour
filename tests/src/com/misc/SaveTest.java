@@ -87,7 +87,7 @@ public class SaveTest {
     }
     
     @Test
-    public void testTrucksUnlocked() {
+    public void testSaveTrucksUnlocked() {
         try {
             GameScreen gameScreenMock = new GameScreen(new ArrayList<String>(), true);
             for (Firetruck truck: gameScreenMock.getFirestation().getParkedFireTrucks()) {
