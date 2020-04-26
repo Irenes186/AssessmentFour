@@ -1,6 +1,7 @@
 package com.misc;
 
 import com.Kroy;
+import com.entities.ETFortress;
 import com.entities.Firetruck;
 import com.screens.GameScreen;
 import org.json.simple.JSONObject;
@@ -259,5 +260,35 @@ public class SaveTest {
         gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
         
         assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getType() == Constants.TruckType.BLUE);
+    }
+    
+    @Test
+    public void testSaveFortressesDestroyed() {
+        for (ETFortress fortress: gameScreenDummy.getETFortresses()) {
+            switch (fortress.getType()) {
+                case CLIFFORD:
+                case RAIL:
+                case CASTLE1:
+                    fortress.getHealthBar().setCurrentAmount(0);
+                    assertTrue(fortress.flood());
+                    break;
+                default:
+            }
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        for (ETFortress fortress: gameScreenDummy.getETFortresses()) {
+            switch (fortress.getType()) {
+                case CLIFFORD:
+                case RAIL:
+                case CASTLE1:
+                    fortress.flood();
+                    assertTrue(fortress.isFlooded());
+                    break;
+                default:
+            }
+        }
     }
 }
