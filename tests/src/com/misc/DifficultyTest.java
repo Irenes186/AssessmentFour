@@ -10,6 +10,8 @@ import com.entities.SpeedPowerup;
 import com.pathFinding.MapGraph;
 import com.screens.GameScreen;
 import com.testrunner.GdxTestRunner;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -35,7 +37,11 @@ public class DifficultyTest {
     @Before
     public void setUp() {
         initMocks(this);
-        
+    }
+    
+    @After
+    public void resetDiff() {
+        Constants.getInstance().difficulty = 1f;
     }
     
     @Test
@@ -98,5 +104,4 @@ public class DifficultyTest {
         assertTrue(easyPatrolHealth < hardPatrolHealth);
         assertTrue(easyFortressHealth < hardFortressHealth);
     }
-
 }
