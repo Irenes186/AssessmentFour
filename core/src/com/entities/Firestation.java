@@ -81,6 +81,14 @@ public class Firestation extends SimpleSprite {
                     "You can no longer repair or refill your fire trucks", 1, 7);
         }
     }
+    
+    public boolean destroy() {
+        if (!isDestroyed && this.getHealthBar().getCurrentAmount() <= 0) {
+            this.isDestroyed = true;
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Repair a firetruck over time.
