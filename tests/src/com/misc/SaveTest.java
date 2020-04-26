@@ -221,4 +221,27 @@ public class SaveTest {
         
         assertTrue(gameScreenDummy.getTime() == 60);
     }
+    
+    @Test
+    public void testSaveFirestationHealth() {
+        float firestationMaxHealth = gameScreenDummy.getFirestation().getHealthBar().getCurrentAmount();
+        gameScreenDummy.getFirestation().getHealthBar().setCurrentAmount((int) firestationMaxHealth / 2);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getHealthBar().getCurrentAmount() == (int) firestationMaxHealth / 2);
+    }
+    
+    @Test
+    public void testSaveDiscovered() {
+        gameScreenDummy.setTime(0);
+        gameScreenDummy.getFirestation().getHealthBar().setCurrentAmount(0);
+        assertTrue(gameScreenDummy.getFirestation().destroy());
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().isDestroyed());
+    }
 }
