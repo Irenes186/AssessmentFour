@@ -395,8 +395,7 @@ public class GameScreen implements Screen {
             }
 
             JSONObject truck = (JSONObject) parser.parse(trucks.get(key).toString());
-
-            if (fireTruckColour == truck.get("TruckType")) {
+            if (fireTruckColour.equals(truck.get("TruckType"))) {
               firetruck.setBought ((Boolean) truck.get("Bought"));
               firetruck.setAlive ((Boolean) truck.get("Alive"));
             }
