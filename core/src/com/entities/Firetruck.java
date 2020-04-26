@@ -545,6 +545,10 @@ public class Firetruck extends MovementSprite {
 		activePowerups.remove(powerup);
 	}
 	
+	public HashMap<Powerup, Integer> getActivePowerups() {
+	    return activePowerups;
+	}
+	
 	public float getArmour() {
 		return armour;
 	}
