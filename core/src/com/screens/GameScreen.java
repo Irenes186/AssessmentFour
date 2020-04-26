@@ -351,7 +351,10 @@ public class GameScreen implements Screen {
         if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
           String[] newPosition = activeTruck.get("Location").toString().split(", ");
           firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
-          firetruck.setHealth((int)((double) activeTruck.get("Health")));
+		  firetruck.setHealth((int)((double) activeTruck.get("Health")));
+		  
+		  float rotation = (float)((double)activeTruck.get("Rotation"));
+		  firetruck.resetRotation(rotation);
 
           ArrayList <String> powerups = (ArrayList) activeTruck.get("Powerups");
 
