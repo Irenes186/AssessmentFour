@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.entities.Firestation;
 import com.misc.SFX;
@@ -118,6 +118,8 @@ public class GameScreen implements Screen {
 	private final CarparkScreen carparkScreen;
 	private final GameInputHandler gameInputHandler;
 	
+	FitViewport viewport;
+	
 	Random powGenerator;
 //	ExtendViewport viewport;
 
@@ -139,6 +141,7 @@ public class GameScreen implements Screen {
 		// Zoom that the user has set with their scroll wheel
 		this.zoomTarget = 1.5f;
 		this.camera.zoom = 2f;
+		this.camera.update();
 
 		// Load the map, set the unit scale
 		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
@@ -167,6 +170,10 @@ public class GameScreen implements Screen {
 
 		generateTutorial();
 
+//		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+//        viewport.apply();
+		
+//		this.stage = new Stage(viewport);
 		this.stage = new Stage(new ScreenViewport());
 //		viewport = new ExtendViewport(MAP_SCALE * 0.1f, MAP_SCALE * 0.1f, this.camera);
 //		this.stage = new Stage(viewport);
@@ -434,6 +441,7 @@ public class GameScreen implements Screen {
 		this.resume();
 		this.camera.setToOrtho(false);
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
+		this.camera.update();
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
 		Gdx.input.setInputProcessor(gameInputHandler);
@@ -576,11 +584,13 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
-//	    stage.getViewport().update(width, height);
+//		this.camera.setToOrtho(false, width, height);
+	    stage.getViewport().update(width, height);
+		// DISABLED FOR ASSESSMENT 4
+//		vignetteSepiaShader.begin();
+//		vignetteSepiaShader.setUniformf("u_resolution", width, height);
+//		vignetteSepiaShader.end();
 	    camera.update();
-		vignetteSepiaShader.begin();
-		vignetteSepiaShader.setUniformf("u_resolution", width, height);
-		vignetteSepiaShader.end();
 	}
 
 	/**

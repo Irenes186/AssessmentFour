@@ -188,7 +188,8 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
-
+        
+        // Take a copy of active powerups to work around concurrent set modification
         HashSet<Powerup> currentPowerups = new HashSet<Powerup>(activePowerups.keySet());
         for (Powerup pow: currentPowerups) {
         	pow.applyPowerup();
