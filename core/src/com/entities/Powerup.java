@@ -115,6 +115,12 @@ public abstract class Powerup extends SimpleSprite {
 	protected void endPowerup() {}
 	
 	public int getActiveTime() {return activeTime;}
+	
+	@Override
+	public boolean equals(Object o) {return o instanceof Powerup &&
+	                                    ((Powerup) o).type == type &&
+	                                    ((Powerup) o).activeTime == activeTime &&
+                                        ((Powerup) o).target.getType() == target.getType();}
 
   public String toString() {
         return type;
