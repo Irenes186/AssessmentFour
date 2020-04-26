@@ -363,7 +363,6 @@ public class SaveTest {
     
     @Test
     public void testSavePowerups() {
-        try {
         SpeedPowerup speedPow = new SpeedPowerup(dummyTexture, 30);
         speedPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         RepairPowerup repairPow = new RepairPowerup(dummyTexture);
@@ -386,9 +385,5 @@ public class SaveTest {
         
         assertTrue(speedFound);
         assertTrue(repairFound);
-        
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
