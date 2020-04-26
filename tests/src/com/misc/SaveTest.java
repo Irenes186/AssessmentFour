@@ -24,6 +24,8 @@ import java.io.IOException;
 import org.junit.Test;
 
 public class SaveTest {
+    GameScreen gameScreenDummy;
+    
     public ArrayList<String> loadSave(String fileName) {
         String fileString;
         File file = new File("assets/saves/" + fileName);
@@ -86,28 +88,127 @@ public class SaveTest {
         }
     }
     
+    @Before
+    public void setUp() {
+        gameScreenDummy = new GameScreen(new ArrayList<String>(), true);
+    }
+    
     @Test
     public void testSaveTrucksUnlocked() {
-        try {
-            GameScreen gameScreenMock = new GameScreen(new ArrayList<String>(), true);
-            for (Firetruck truck: gameScreenMock.getFirestation().getParkedFireTrucks()) {
-                if (truck.getType() == Constants.TruckType.BLUE) {
-                    truck.buy();
-                }
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                truck.buy();
             }
-            
-            saveGame(gameScreenMock.save("testSave.txt"), "testSave.txt");
-            gameScreenMock = new GameScreen(loadSave("testSave.txt"), true);
-            
-            for (Firetruck truck: gameScreenMock.getFirestation().getParkedFireTrucks()) {
-                if (truck.getType() == Constants.TruckType.BLUE) {
-                    assertTrue(truck.isBought());
-                }
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                assertTrue(truck.isBought());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("exception occurred");
         }
     }
-
+    
+    @Test
+    public void testSaveTruckPos() {
+        gameScreenDummy.getFirestation().getActiveFireTruck().setPosition(100, 100);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getX() == 100);
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getY() == 100);
+    }
+    
+    @Test
+    public void testSaveTruckRotation() {
+        gameScreenDummy.getFirestation().getActiveFireTruck().resetRotation(90);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getRotation() == 90);
+    }
+    
+    @Test
+    public void testSaveActiveTruckHealth() {
+        float redTruckMaxHealth;
+        redTruckMaxHealth = gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getMaxAmount();
+        gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().setCurrentAmount((int) redTruckMaxHealth / 2);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() == (int) redTruckMaxHealth / 2);
+    }
+    
+    @Test
+    public void testSaveParkedTruckHealth() {
+        float blueTruckMaxHealth = -1;
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                blueTruckMaxHealth = truck.getHealthBar().getMaxAmount();
+                truck.getHealthBar().setCurrentAmount((int) blueTruckMaxHealth / 2);
+            }
+        }
+        if (blueTruckMaxHealth == -1) {
+            throw new RuntimeException("blue fire truck not found!");
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                assertTrue(truck.getHealthBar().getCurrentAmount() == (int) blueTruckMaxHealth / 2);
+            }
+        }
+    }
+    
+    @Test
+    public void testSaveActiveTruckWater() {
+        float redTruckMaxWater;
+        redTruckMaxWater = gameScreenDummy.getFirestation().getActiveFireTruck().getWaterBar().getMaxAmount();
+        gameScreenDummy.getFirestation().getActiveFireTruck().getWaterBar().setCurrentAmount((int) redTruckMaxWater / 2);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getWaterBar().getCurrentAmount() == (int) redTruckMaxWater / 2);
+    }
+    
+    @Test
+    public void testSaveParkedTruckWater() {
+        float blueTruckMaxWater = -1;
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                blueTruckMaxWater = truck.getWaterBar().getMaxAmount();
+                truck.getWaterBar().setCurrentAmount((int) blueTruckMaxWater / 2);
+            }
+        }
+        if (blueTruckMaxWater == -1) {
+            throw new RuntimeException("blue fire truck not found!");
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        for (Firetruck truck: gameScreenDummy.getFirestation().getParkedFireTrucks()) {
+            if (truck.getType() == Constants.TruckType.BLUE) {
+                assertTrue(truck.getWaterBar().getCurrentAmount() == (int) blueTruckMaxWater / 2);
+            }
+        }
+    }
+    
+    @Test
+    public void testSaveScore() {
+        gameScreenDummy.setScore(100);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getScore() == 100);
+    }
 }
