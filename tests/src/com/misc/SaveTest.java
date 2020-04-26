@@ -1,16 +1,23 @@
 package com.misc;
 
 import com.Kroy;
+import com.badlogic.gdx.graphics.Texture;
 import com.entities.ETFortress;
 import com.entities.Firetruck;
+import com.entities.Powerup;
+import com.entities.RepairPowerup;
+import com.entities.SpeedPowerup;
 import com.screens.GameScreen;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.json.simple.parser.JSONParser;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import static org.junit.Assert.*;
@@ -26,6 +33,7 @@ import org.junit.Test;
 
 public class SaveTest {
     GameScreen gameScreenDummy;
+    static Texture dummyTexture;
     
     public ArrayList<String> loadSave(String fileName) {
         String fileString;
@@ -87,6 +95,11 @@ public class SaveTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+        dummyTexture = new Texture("garage.jpg");
     }
     
     @Before
@@ -238,7 +251,7 @@ public class SaveTest {
     public void testSaveFirestationDestroyed() {
         gameScreenDummy.setTime(0);
         gameScreenDummy.getFirestation().getHealthBar().setCurrentAmount(0);
-        assertTrue(gameScreenDummy.getFirestation().destroy());
+        gameScreenDummy.getFirestation().destroy();
         
         saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
         gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
@@ -263,6 +276,62 @@ public class SaveTest {
     }
     
     @Test
+    public void testSaveFortressHealth() {
+        for (ETFortress fortress: gameScreenDummy.getETFortresses()) {
+            switch (fortress.getType()) {
+                case CLIFFORD:
+                    fortress.getHealthBar().setCurrentAmount(1);
+                    break;
+                case MINSTER:
+                    fortress.getHealthBar().setCurrentAmount(2);
+                    break;
+                case RAIL:
+                    fortress.getHealthBar().setCurrentAmount(3);
+                    break;
+                case CASTLE1:
+                    fortress.getHealthBar().setCurrentAmount(4);
+                    break;
+                case CASTLE2:
+                    fortress.getHealthBar().setCurrentAmount(5);
+                    break;
+                case MOSSY:
+                    fortress.getHealthBar().setCurrentAmount(6);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown ETFortress type: " + fortress.getType().name());
+            }
+        }
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        for (ETFortress fortress: gameScreenDummy.getETFortresses()) {
+            switch (fortress.getType()) {
+                case CLIFFORD:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 1);
+                    break;
+                case MINSTER:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 2);
+                    break;
+                case RAIL:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 3);
+                    break;
+                case CASTLE1:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 4);
+                    break;
+                case CASTLE2:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 5);
+                    break;
+                case MOSSY:
+                    assertTrue(fortress.getHealthBar().getCurrentAmount() == 6);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown ETFortress type: " + fortress.getType().name());
+            }
+        }
+    }
+    
+    @Test
     public void testSaveFortressesDestroyed() {
         for (ETFortress fortress: gameScreenDummy.getETFortresses()) {
             switch (fortress.getType()) {
@@ -270,7 +339,7 @@ public class SaveTest {
                 case RAIL:
                 case CASTLE1:
                     fortress.getHealthBar().setCurrentAmount(0);
-                    assertTrue(fortress.flood());
+                    fortress.flood();
                     break;
                 default:
             }
@@ -289,6 +358,37 @@ public class SaveTest {
                     break;
                 default:
             }
+        }
+    }
+    
+    @Test
+    public void testSavePowerups() {
+        try {
+        SpeedPowerup speedPow = new SpeedPowerup(dummyTexture, 30);
+        speedPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
+        RepairPowerup repairPow = new RepairPowerup(dummyTexture);
+        repairPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        boolean speedFound = false;
+        boolean repairFound = false;
+        for (Powerup pow: gameScreenDummy.getFirestation().getActiveFireTruck().getActivePowerups().keySet()) {
+            if (!speedFound && pow.equals(speedPow)) {
+                speedFound = true;
+            } else if (!repairFound && pow.equals(repairPow)) {
+                repairFound = true;
+            } else {
+                fail("excess powerup found: " + pow + ": " + pow.getActiveTime());
+            }
+        }
+        
+        assertTrue(speedFound);
+        assertTrue(repairFound);
+        
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
