@@ -211,4 +211,14 @@ public class SaveTest {
         
         assertTrue(gameScreenDummy.getScore() == 100);
     }
+    
+    @Test
+    public void testSaveTimeLeft() {
+        gameScreenDummy.setTime(60);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(gameScreenDummy.getTime() == 60);
+    }
 }
