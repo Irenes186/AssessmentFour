@@ -568,11 +568,11 @@ public class GameScreen implements Screen {
           }
     }
 
-  public GameScreen (final Kroy game, ArrayList<String> saveContents) {
+	public GameScreen (final Kroy game, ArrayList<String> saveContents) {
     this(game);
     this.isInTutorial = false;
-	this.skipTutorial = true;
-    JSONParser parser = new JSONParser();
+		this.skipTutorial = true;
+    	JSONParser parser = new JSONParser();
 
     try {
       JSONObject trucks = (JSONObject) parser.parse (saveContents.get(0));
@@ -651,7 +651,7 @@ public class GameScreen implements Screen {
 
         for (ETFortress fort : this.ETFortresses) {
           if (fort.getType().name().equals(fortData.get("FortType"))) {
-              fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
+            fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
           }
         }
       }
@@ -1628,6 +1628,13 @@ public class GameScreen implements Screen {
 
 	public Firetruck getActiveTruck() {return this.firestation.getActiveFireTruck();}
 
+    /**
+     * Collects all the information about each ETFortress and returns 
+     * the string of the JSON strings appended
+     * 
+     * @param fileName
+     * @return
+     */
 	public String save (String fileName) {
 		String output = "";
 

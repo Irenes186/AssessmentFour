@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 /**
  * The invincible powerup prevents the firetruck 
- * it is applied to from takling damage and keeps 
+ * it is applied to from taking damage and keeps 
  * track on when the powerup was applied
  */
 public class InvinciblePowerup extends Powerup {
@@ -41,7 +41,7 @@ public class InvinciblePowerup extends Powerup {
     protected boolean doPowerupLogic() {return true;}
 
     /**
-     * removes the assigned fire truck's armour
+     * Removes the assigned fire truck's armour
      */
     @Override
     protected void endPowerup() {

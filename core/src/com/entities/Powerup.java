@@ -81,6 +81,11 @@ public abstract class Powerup extends SimpleSprite {
 		}
 	}
 
+	/**
+	 * Checks if the powerup timer has run out and deactivates the powerup if needed
+	 * 
+	 * @return boolean true if there is still time left otherwise false
+	 */
 	private boolean doPowerupTimeout() {
 		if (activeTime == -1) {
 			return true;
@@ -94,6 +99,11 @@ public abstract class Powerup extends SimpleSprite {
 		}
 	}
 
+	/**
+	 * Renders the powerup sprite if the powerup has a firetruck
+	 * 
+	 * @param batch
+	 */
 	public void update(Batch batch) {
 	    if (target != null) {
 	        batch.draw(texture, target.getCentreX(), target.getCentreY(), texture.getWidth() * 3, texture.getHeight() * 3);
