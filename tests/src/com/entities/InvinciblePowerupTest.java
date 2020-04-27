@@ -29,13 +29,27 @@ public class InvinciblePowerupTest {
     }
 
     @Test
-    public void testInvincibilePowerup() {
+    public void testInvincibilePowerupApply() {
         InvinciblePowerup invinciblePow = new InvinciblePowerup(dummyTexture, 30);
-        invinciblePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         float oldHealth = gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount();
+        invinciblePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         invinciblePow.applyPowerup();
         
         gameScreenDummy.getFirestation().getActiveFireTruck().takeDamage(100);
-        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed() > oldHealth);
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() == oldHealth);
+    }
+    
+    @Test
+    public void testInvincibilePowerupReset() {
+        InvinciblePowerup invinciblePow = new InvinciblePowerup(dummyTexture, 30);
+        float oldHealth = gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount();
+        invinciblePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
+        invinciblePow.applyPowerup();
+        
+        gameScreenDummy.getFirestation().getActiveFireTruck().takeDamage(100);
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() == oldHealth);
+        invinciblePow.dequeuePowerup();
+        gameScreenDummy.getFirestation().getActiveFireTruck().takeDamage(100);
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() == oldHealth - 100);
     }
 }
