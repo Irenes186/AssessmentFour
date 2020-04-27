@@ -188,7 +188,8 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
-
+        
+        // Take a copy of active powerups to work around concurrent set modification
         HashSet<Powerup> currentPowerups = new HashSet<Powerup>(activePowerups.keySet());
         for (Powerup pow: currentPowerups) {
         	pow.applyPowerup();
@@ -544,6 +545,10 @@ public class Firetruck extends MovementSprite {
 		activePowerups.remove(powerup);
 	}
 	
+	public HashMap<Powerup, Integer> getActivePowerups() {
+	    return activePowerups;
+	}
+	
 	public float getArmour() {
 		return armour;
 	}
@@ -592,5 +597,9 @@ public class Firetruck extends MovementSprite {
         }
 
         return json;
+    }
+
+    public void takeDamage(int dam) {
+        getHealthBar().subtractResourceAmount((int) (dam * (1-getArmour())));
     }
 }

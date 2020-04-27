@@ -79,6 +79,14 @@ public class ETFortress extends SimpleSprite {
 			this.getHealthBar().addResourceAmount(type.getHealing());
         }
     }
+    
+    public boolean flood() {
+        if (!flooded && this.getHealthBar().getCurrentAmount() <= 0) {
+            flooded = true;
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Check to see if the ETFortress should fire another projectile. The pattern the ETFortress
