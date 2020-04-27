@@ -475,89 +475,97 @@ public class GameScreen implements Screen {
         JSONParser parser = new JSONParser();
 
         try {
-          JSONObject trucks = (JSONObject) parser.parse (saveContents.get(0));
-          JSONObject activeTruck =  (JSONObject) parser.parse(trucks.get("ActiveTruck").toString());
-          String newActiveTruckType = activeTruck.get("TruckType").toString();
+            JSONObject trucks = (JSONObject) parser.parse (saveContents.get(0));
+            JSONObject activeTruck =  (JSONObject) parser.parse(trucks.get("ActiveTruck").toString());
+            String newActiveTruckType = activeTruck.get("TruckType").toString();
 
-          ArrayList<Firetruck> currentTrucks = firestation.getParkedFireTrucks();
-          currentTrucks.add(firestation.getActiveFireTruck());
+            ArrayList<Firetruck> currentTrucks = firestation.getParkedFireTrucks();
+            currentTrucks.add(firestation.getActiveFireTruck());
+            if ((Boolean)trucks.get("isDestroyed")){
+              firestation.destroy();
+            } else {
+              firestation.getHealthBar().setCurrentAmount((int)((double)trucks.get("Health")));
+            }
+            firestation.setVulnerable((Boolean)trucks.get("isVulnerable"));
+            
+              for (Firetruck firetruck : currentTrucks) {
+              String fireTruckColour = firetruck.getType().getColourString();
 
-          for (Firetruck firetruck : currentTrucks) {
-            String fireTruckColour = firetruck.getType().getColourString();
+              if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
+                String[] newPosition = activeTruck.get("Location").toString().split(", ");
+                firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
+                firetruck.setHealth((int)((double) activeTruck.get("Health")));
+                
+                float rotation = (float)((double)activeTruck.get("Rotation"));
+                firetruck.resetRotation(rotation);
 
-            if (fireTruckColour.equals(activeTruck.get("TruckType").toString())) {
-              String[] newPosition = activeTruck.get("Location").toString().split(", ");
-              firetruck.setPosition(Float.parseFloat(newPosition[0]), Float.parseFloat(newPosition[1]));
-              firetruck.setHealth((int)((double) activeTruck.get("Health")));
+                ArrayList <String> powerups = (ArrayList) activeTruck.get("Powerups");
 
-              ArrayList <String> powerups = (ArrayList) activeTruck.get("Powerups");
+                for (String pow: powerups) {
+                    String[] powerup = pow.split(",");
 
-              for (String pow: powerups) {
-                  String[] powerup = pow.split(",");
+                    Powerup newPow;
 
-                  Powerup newPow;
+                    switch (powerup[0]) {
+                        case "Damage":
+                            newPow = new DamagePowerup(dummyTexture, Integer.parseInt(powerup[1]));
+                        case "Invincible":
+                            newPow = new InvinciblePowerup(dummyTexture, Integer.parseInt(powerup[1]));
+                            break;
+                        case "Repair":
+                            newPow = new RepairPowerup(dummyTexture);
+                            break;
+                        case "Refill":
+                            newPow = new RefillPowerup(dummyTexture);
+                            break;
+                        case "Speed":
+                            newPow = new SpeedPowerup(dummyTexture, Integer.parseInt(powerup[1]));
+                            break;
+                          default:
+                              throw new RuntimeException("Cannot load save powerup: " + powerup[0]);
+                    }
 
-                  switch (powerup[0]) {
-                      case "Damage":
-                          newPow = new DamagePowerup(dummyTexture, Integer.parseInt(powerup[1]));
-                      case "Invincible":
-                          newPow = new InvinciblePowerup(dummyTexture, Integer.parseInt(powerup[1]));
-                          break;
-                      case "Repair":
-                          newPow = new RepairPowerup(dummyTexture);
-                          break;
-                      case "Refill":
-                          newPow = new RefillPowerup(dummyTexture);
-                          break;
-                      case "Speed":
-                          newPow = new SpeedPowerup(dummyTexture, Integer.parseInt(powerup[1]));
-                          break;
-                        default:
-                            throw new RuntimeException("Cannot load save powerup: " + powerup[0]);
+                    newPow.queuePowerup(firetruck);
+                }
+
+                firestation.setActiveFireTruck(firetruck);
+              }
+              else {
+
+                for (Object key: trucks.keySet()) {
+                  if (!(trucks.get(key) instanceof JSONObject)) {
+                    continue;
                   }
 
-                  newPow.queuePowerup(firetruck);
-              }
-
-              firestation.setActiveFireTruck(firetruck);
-            }
-            else {
-
-              for (Object key: trucks.keySet()) {
-                if (!(trucks.get(key) instanceof JSONObject)) {
-                  continue;
-                }
-
-                JSONObject truck = (JSONObject) parser.parse(trucks.get(key).toString());
-
-                if (fireTruckColour == truck.get("TruckType")) {
-                  firetruck.setBought ((Boolean) truck.get("Bought"));
-                  firetruck.setAlive ((Boolean) truck.get("Alive"));
+                  JSONObject truck = (JSONObject) parser.parse(trucks.get(key).toString());
+                  if (fireTruckColour.equals(truck.get("TruckType"))) {
+                    firetruck.setBought ((Boolean) truck.get("Bought"));
+                    firetruck.setAlive ((Boolean) truck.get("Alive"));
+                  }
                 }
               }
             }
-          }
 
-          for (int index = 1; index < saveContents.size() - 1; index++) {
-            JSONObject fortData = (JSONObject) parser.parse(saveContents.get(index));
+            for (int index = 1; index < saveContents.size() - 1; index++) {
+              JSONObject fortData = (JSONObject) parser.parse(saveContents.get(index));
 
-            for (ETFortress fort : this.ETFortresses) {
-              if (fort.getType().name().equals(fortData.get("FortType"))) {
-                  fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
+              for (ETFortress fort : this.ETFortresses) {
+                if (fort.getType().name().equals(fortData.get("FortType"))) {
+                    fort.getHealthBar().setCurrentAmount((int)((double) fortData.get("Health")));
+                }
               }
             }
+            JSONObject gameData = (JSONObject) parser.parse(saveContents.get(saveContents.size() - 1));
+
+            com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
+            this.score = (int)((long) gameData.get("Score"));
+            this.time = (int)((long) gameData.get("Time"));
+
+
+          } catch (ParseException pe) {
+            System.out.println (pe.toString());
+
           }
-          JSONObject gameData = (JSONObject) parser.parse(saveContents.get(saveContents.size() - 1));
-
-          com.misc.Constants.getInstance().difficulty = (float) ((double) gameData.get("Difficulty"));
-          this.score = (int)((long) gameData.get("Score"));
-          this.time = (int)((long) gameData.get("Time"));
-
-
-        } catch (ParseException pe) {
-          System.out.println (pe.toString());
-
-        }
     }
 
   public GameScreen (final Kroy game, ArrayList<String> saveContents) {
