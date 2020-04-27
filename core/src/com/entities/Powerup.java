@@ -17,8 +17,6 @@ public abstract class Powerup extends SimpleSprite {
 	protected Firetruck target;
 	// Whether or not powerup has been picked up
 	protected boolean pickedUp;
-	// Is this the first frame the powerup has been applied?
-	protected boolean firstApply;
 
   protected String type;
 
@@ -51,8 +49,6 @@ public abstract class Powerup extends SimpleSprite {
 	private void create() {
 		currentActiveTime = 0;
 		target = null;
-		pickedUp = false;
-		firstApply = true;
 	}
 	
 	/**
@@ -61,15 +57,16 @@ public abstract class Powerup extends SimpleSprite {
 	public void queuePowerup (Firetruck target) {
 		target.activatePowerup(this, activeTime);
 		this.target = target;
+		beginPowerup();
 	}
 	
 	/**
 	 * Remove this powerup from the target firetruck
 	 */
 	public void dequeuePowerup () {
+	    endPowerup();
 		target.deactivatePowerup(this);
 		this.target = null;
-		this.pickedUp = false;
 	}
 	
 	/** Apply the powerup's effects to the specified fireengine
@@ -77,11 +74,7 @@ public abstract class Powerup extends SimpleSprite {
 	 * @return true if the powerup was applied successfully, false otherwise
 	 */
 	public boolean applyPowerup () {
-	    if (firstApply) {
-	        beginPowerup();
-	        firstApply = false;
-	    }
-		if (doPowerupTimeout()) {
+	    if (doPowerupTimeout()) {
 			return doPowerupLogic();
 		} else {
 			return false;
@@ -96,7 +89,6 @@ public abstract class Powerup extends SimpleSprite {
 			return true;
 		} else {
 			currentActiveTime = 0;
-			endPowerup();
 			dequeuePowerup();
 			return false;
 		}
