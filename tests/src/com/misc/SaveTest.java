@@ -386,4 +386,17 @@ public class SaveTest {
         assertTrue(speedFound);
         assertTrue(repairFound);
     }
+    
+    @Test
+    public void testSaveDifficulty() {
+        Constants.getInstance().difficulty = 0.5f;
+        gameScreenDummy = new GameScreen(new ArrayList<String>(), true);
+        
+        saveGame(gameScreenDummy.save("testSave.txt"), "testSave.txt");
+        Constants.getInstance().difficulty = 1f;
+        gameScreenDummy = new GameScreen(loadSave("testSave.txt"), true);
+        
+        assertTrue(Constants.getInstance().difficulty == 0.5f);
+        Constants.getInstance().difficulty = 1f;
+    }
 }
