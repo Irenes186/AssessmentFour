@@ -29,7 +29,7 @@ public class RepairPowerupTest {
     }
 
     @Test
-    public void testRepairPowerup() {
+    public void testRepairPowerupApply() {
         RepairPowerup repairPowerup = new RepairPowerup(dummyTexture);
         repairPowerup.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().setCurrentAmount(1);

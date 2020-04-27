@@ -29,12 +29,24 @@ public class DamagePowerupTest {
     }
 
     @Test
-    public void testDamagePowerup() {
+    public void testDamagePowerupApply() {
         DamagePowerup damagePow = new DamagePowerup(dummyTexture, 30);
-        damagePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         float oldDamage = gameScreenDummy.getFirestation().getActiveFireTruck().getDamage();
+        damagePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         damagePow.applyPowerup();
         
         assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getDamage() > oldDamage);
+    }
+    
+    @Test
+    public void testDamagePowerupReset() {
+        DamagePowerup damagePow = new DamagePowerup(dummyTexture, 30);
+        float oldDamage = gameScreenDummy.getFirestation().getActiveFireTruck().getDamage();
+        damagePow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
+        damagePow.applyPowerup();
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getDamage() > oldDamage);
+        damagePow.dequeuePowerup();
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getDamage() == oldDamage);
     }
 }

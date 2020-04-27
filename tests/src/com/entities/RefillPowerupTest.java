@@ -29,7 +29,7 @@ public class RefillPowerupTest {
     }
 
     @Test
-    public void testRefillPowerup() {
+    public void testRefillPowerupApply() {
         RefillPowerup refillPowerup = new RefillPowerup(dummyTexture);
         refillPowerup.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         gameScreenDummy.getFirestation().getActiveFireTruck().getWaterBar().setCurrentAmount(1);

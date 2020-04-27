@@ -29,12 +29,24 @@ public class SpeedPowerupTest {
     }
 
     @Test
-    public void testSpeedPowerup() {
+    public void testSpeedPowerupApply() {
         SpeedPowerup speedPow = new SpeedPowerup(dummyTexture, 30);
-        speedPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         float oldMaxSpeed = gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed();
+        speedPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
         speedPow.applyPowerup();
         
         assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed() > oldMaxSpeed);
+    }
+    
+    @Test
+    public void testSpeedPowerupReset() {
+        SpeedPowerup speedPow = new SpeedPowerup(dummyTexture, 30);
+        float oldMaxSpeed = gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed();
+        speedPow.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
+        speedPow.applyPowerup();
+        
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed() > oldMaxSpeed);
+        speedPow.dequeuePowerup();
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getMaxSpeed() == oldMaxSpeed);
     }
 }
