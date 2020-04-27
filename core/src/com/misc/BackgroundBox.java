@@ -56,6 +56,12 @@ public class BackgroundBox extends Actor {
         pixmap.dispose();
     }
 
+    /**
+     * Adds the bow to the passed batch to be rendered
+     * 
+     * @param batch 
+     * @param parentAlpha
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Color color = getColor();
