@@ -32,7 +32,8 @@ public class RepairPowerupTest {
     public void testRepairPowerupApply() {
         RepairPowerup repairPowerup = new RepairPowerup(dummyTexture);
         repairPowerup.queuePowerup(gameScreenDummy.getFirestation().getActiveFireTruck());
-        gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().setCurrentAmount(1);
+        gameScreenDummy.getFirestation().getActiveFireTruck().setHealth(1);
+        assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() == 1);
         repairPowerup.applyPowerup();
         
         assertTrue(gameScreenDummy.getFirestation().getActiveFireTruck().getHealthBar().getCurrentAmount() > 1);
