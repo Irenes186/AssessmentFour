@@ -81,8 +81,8 @@ public class Constants {
     public enum TruckType {
         RED ("Red", new float[]{
                 170,  // HEALTH
-                10f,  // ACCELERATION
-                600f, // MAX_SPEED
+                20f,  // ACCELERATION
+                300f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 550,  // WATER MAX
@@ -101,7 +101,7 @@ public class Constants {
         }),
         YELLOW ("Yellow", new float[]{
                 240,  // HEALTH
-                18f,  // ACCELERATION
+                10f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 1.25f, // RANGE
@@ -111,8 +111,8 @@ public class Constants {
         }),
         GREEN("Green", new float[]{
                 245f, // HEALTH
-                15f,  // ACCELERATION
-                505f, // MAX_SPEED
+                30f,  // ACCELERATION
+                200f, // MAX_SPEED
                 1.4f, // RESTITUTION
                 1.2f, // RANGE
                 700,  // WATER MAX

@@ -115,7 +115,7 @@ public class Firetruck extends MovementSprite {
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.getHealthBar().setMaxResource((int) (this.getType().getProperties()[0] * (1 / com.misc.Constants.getInstance().difficulty)));
         this.setAccelerationRate(this.getType().getProperties()[1]);
-        this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
+        this.setDecelerationRate(this.getType().getProperties()[1] * 0.8f); //* 0.6f
         this.setMaxSpeed(this.getType().getProperties()[2]);
         this.createWaterHose();
         this.isAlive = true;
@@ -276,7 +276,8 @@ public class Firetruck extends MovementSprite {
      * from layers of images with each image slightly higher than the last
      */
     private void drawVoxelImage(Batch batch) {
-        // Length of array containing image slices
+        // Length of arr
+        // ay containing image slices
         int slicesLength = this.firetruckSlices.size() - 1;
         float x = getX(), y = getY(), angle = this.getRotation();
         float width = this.getWidth(), height = this.getHeight();

@@ -63,7 +63,7 @@ public class MovementSprite extends SimpleSprite {
         this.speed = new Vector2();
         this.speedMagnitude = 0;
         this.accelerationRate = 10;
-        this.decelerationRate = 1;
+        this.decelerationRate = 6;
         this.rotationLockTime = 0;
         this.maxSpeed = 200;
     }
@@ -152,12 +152,12 @@ public class MovementSprite extends SimpleSprite {
      * is based upon the sprite's properties.
      */
     private void decelerate() {
-        if (speedMagnitude >= decelerationRate) {
-            speedMagnitude -= decelerationRate * Gdx.graphics.getDeltaTime();
+        if (speedMagnitude > decelerationRate) {
+            speedMagnitude -= decelerationRate;
             speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
             speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
-        } else if (speedMagnitude <= -decelerationRate) {
-            speedMagnitude += decelerationRate * Gdx.graphics.getDeltaTime();
+        } else if (speedMagnitude < -decelerationRate) {
+            speedMagnitude += decelerationRate;
             speed.x = MathUtils.cosDeg(getRotation()) * speedMagnitude;
             speed.y = MathUtils.sinDeg(getRotation()) * speedMagnitude;
         } else {
